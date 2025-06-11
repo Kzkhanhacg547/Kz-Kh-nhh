@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kz Khánhh - Note Editor</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #8a2be2;
+        --primary-dark: #4b0082;
+        --accent: #ff00ff;
+        --accent-light: #ff66ff;
+        --text: #e0e0e0;
+        --text-dark: #bebebe;
+        --background: #0c0b1d;
+        --background-light: #1a1833;
+        --background-lighter: #262147;
+        --danger: #ff5733;
+        --success: #00cc66;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        transition: all 0.3s ease;
+      }
+
+      body {
+        background: var(--background);
+        color: var(--text);
+        min-height: 100vh;
+        background-image: radial-gradient(
+            circle at 10% 20%,
+            rgba(138, 43, 226, 0.1) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 90% 80%,
+            rgba(255, 0, 255, 0.1) 0%,
+            transparent 50%
+          );
+        position: relative;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%238A2BE2' fill-opacity='0.05'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+        position: relative;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 30px;
+        position: relative;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--accent);
+        text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+      }
+
+      h1::before,
+      h1::after {
+        content: "✧";
+        display: inline-block;
+        margin: 0 15px;
+        color: var(--primary);
+        text-shadow: 0 0 5px rgba(138, 43, 226, 0.5);
+      }
+
+      .subtitle {
+        font-size: 1rem;
+        color: var(--text-dark);
+        font-style: italic;
+        margin-bottom: 20px;
+      }
+
+      .card {
+        background: var(--background-light);
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        margin-bottom: 30px;
+        border: 1px solid rgba(138, 43, 226, 0.2);
+        backdrop-filter: blur(4px);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          to bottom right,
+          rgba(138, 43, 226, 0.1),
+          transparent,
+          rgba(255, 0, 255, 0.1)
+        );
+        transform: rotate(45deg);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .card-title {
+        font-size: 1.5rem;
+        color: var(--accent-light);
+        font-weight: 600;
+      }
+
+      .card-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      /* Form styles */
+      .form-group {
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--accent-light);
+        font-weight: 500;
+      }
+
+      input[type="text"],
+      textarea {
+        width: 100%;
+        padding: 12px 15px;
+        background: var(--background);
+        border: 1px solid var(--primary-dark);
+        border-radius: 8px;
+        color: var(--text);
+        font-size: 1rem;
+        outline: none;
+      }
+
+      input[type="text"]:focus,
+      textarea:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(255, 0, 255, 0.2);
+      }
+
+      textarea {
+        min-height: 200px;
+        resize: vertical;
+      }
+
+      .media-input-container {
+        background: var(--background);
+        border: 2px dashed var(--primary-dark);
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .media-input-container:hover {
+        border-color: var(--accent);
+      }
+
+      .media-input-label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+      }
+
+      .media-input-label i {
+        font-size: 2rem;
+        color: var(--primary);
+      }
+
+      .media-input-text {
+        font-size: 1rem;
+        color: var(--text-dark);
+      }
+
+      input[type="file"] {
+        display: none;
+      }
+
+      .media-preview {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .media-section-title {
+        font-size: 1.1rem;
+        color: var(--accent-light);
+        margin: 20px 0 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .media-section-title i {
+        color: var(--primary);
+      }
+
+      .media-item {
+        position: relative;
+        background: var(--background-lighter);
+        border-radius: 8px;
+        overflow: hidden;
+        aspect-ratio: 1/1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--primary-dark);
+      }
+
+      .media-item img,
+      .media-item video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .media-item audio {
+        width: 100%;
+      }
+
+      .remove-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: rgba(0, 0, 0, 0.6);
+        border: none;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--text);
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+
+      .media-item:hover .remove-btn {
+        opacity: 1;
+      }
+
+      .remove-btn:hover {
+        background: var(--danger);
+        transform: scale(1.1);
+      }
+
+      /* Buttons */
+      .btn {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--primary);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(138, 43, 226, 0.1);
+        color: var(--accent-light);
+      }
+
+      .btn-danger {
+        background: transparent;
+        color: var(--danger);
+        border: 1px solid var(--danger);
+      }
+
+      .btn-danger:hover {
+        background: rgba(255, 87, 51, 0.1);
+      }
+
+      .btn-group {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+        justify-content: space-between;
+      }
+
+      .btn-group-right {
+        display: flex;
+        gap: 15px;
+      }
+
+      /* Modal */
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(5px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+
+      .modal-content {
+        background: var(--background-light);
+        border-radius: 15px;
+        padding: 30px;
+        max-width: 500px;
+        width: 90%;
+        border: 1px solid var(--primary);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
+          0 0 20px rgba(138, 43, 226, 0.3);
+        position: relative;
+        overflow: hidden;
+        animation: modalFadeIn 0.4s ease-out;
+      }
+
+      @keyframes modalFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modal-title {
+        font-size: 1.8rem;
+        color: var(--accent);
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .modal-title i {
+        margin-right: 10px;
+        color: var(--success);
+      }
+
+      .modal-body {
+        margin-bottom: 25px;
+      }
+
+      .link-group {
+        margin-bottom: 20px;
+      }
+
+      .link-container {
+        display: flex;
+        margin-bottom: 15px;
+        background: var(--background);
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--primary-dark);
+      }
+
+      .link-container input {
+        flex: 1;
+        padding: 12px 15px;
+        background: transparent;
+        border: none;
+        color: var(--text);
+        font-size: 0.9rem;
+      }
+
+      .copy-btn {
+        background: var(--primary-dark);
+        border: none;
+        padding: 0 15px;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .copy-btn:hover {
+        background: var(--primary);
+      }
+
+      .modal-footer {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      /* Loading */
+      .loading-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(5px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+      }
+
+      .loader {
+        width: 80px;
+        height: 80px;
+        border: 3px solid transparent;
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        position: relative;
+      }
+
+      .loader::before,
+      .loader::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        border: 3px solid transparent;
+      }
+
+      .loader::before {
+        top: 5px;
+        left: 5px;
+        right: 5px;
+        bottom: 5px;
+        border-top-color: var(--primary);
+        animation: spin 2s linear infinite;
+      }
+
+      .loader::after {
+        top: 15px;
+        left: 15px;
+        right: 15px;
+        bottom: 15px;
+        border-top-color: var(--accent-light);
+        animation: spin 1.5s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Not found */
+      .not-found {
+        text-align: center;
+        display: none;
+        padding: 50px 0;
+      }
+
+      .not-found i {
+        font-size: 5rem;
+        color: var(--primary);
+        margin-bottom: 20px;
+      }
+
+      .not-found-title {
+        font-size: 2rem;
+        color: var(--accent);
+        margin-bottom: 10px;
+      }
+
+      .not-found-text {
+        color: var(--text-dark);
+        margin-bottom: 30px;
+      }
+
+      /* Mystical decorations */
+      .mystical-shape {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.1;
+        z-index: -1;
+      }
+
+      .mystical-shape.purple {
+        width: 400px;
+        height: 400px;
+        background: var(--primary);
+        top: -200px;
+        right: -100px;
+        animation: float 15s infinite alternate ease-in-out;
+      }
+
+      .mystical-shape.pink {
+        width: 300px;
+        height: 300px;
+        background: var(--accent);
+        bottom: -100px;
+        left: -150px;
+        animation: float 20s infinite alternate-reverse ease-in-out;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        100% {
+          transform: translate(50px, 50px) rotate(180deg);
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .btn-group {
+          flex-direction: column;
+        }
+
+        .btn-group-right {
+          flex-direction: column;
+          width: 100%;
+        }
+
+        .btn {
+          width: 100%;
+        }
+
+        .media-preview {
+          grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="mystical-shape purple"></div>
+      <div class="mystical-shape pink"></div>
+
+      <header>
+        <h1>Kz Khánhh</h1>
+        <p class="subtitle">✧ Chỉnh sửa ghi chú huyền bí ✧</p>
+      </header>
+
+      <div id="loading" class="loading-container">
+        <div class="loader"></div>
+      </div>
+
+      <div id="notFound" class="not-found">
+        <i class="fas fa-ghost"></i>
+        <h2 class="not-found-title">Không tìm thấy ghi chú</h2>
+        <p class="not-found-text">Ghi chú này không tồn tại hoặc đã bị xóa.</p>
+        <a href="/" class="btn btn-primary"
+          ><i class="fas fa-home"></i> Trở về trang chủ</a
+        >
+      </div>
+
+      <div id="noteEditor" style="display: none">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="fas fa-edit"></i> Chỉnh sửa ghi chú
+            </h2>
+            <div class="card-actions">
+              <a id="viewNoteLink" href="#" class="btn btn-secondary"
+                ><i class="fas fa-eye"></i> Xem ghi chú</a
+              >
+            </div>
+          </div>
+
+          <form id="editNoteForm">
+            <div class="form-group">
+              <label for="title">Tiêu đề</label>
+              <input type="text" id="title" name="title" required />
+            </div>
+
+            <div class="form-group">
+              <label for="content">Nội dung</label>
+              <textarea id="content" name="content" required></textarea>
+            </div>
+
+            <div class="form-group">
+              <div class="media-section-title">
+                <i class="fas fa-images"></i> Media đính kèm
+              </div>
+              <div id="existingMediaPreview" class="media-preview"></div>
+            </div>
+
+            <div class="form-group">
+              <div class="media-section-title">
+                <i class="fas fa-plus-circle"></i> Thêm media mới
+              </div>
+              <div class="media-input-container">
+                <label class="media-input-label" for="media">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                  <span class="media-input-text"
+                    >Nhấp để chọn hoặc kéo thả file</span
+                  >
+                  <small>(Hình ảnh, Video, Audio)</small>
+                </label>
+                <input
+                  type="file"
+                  id="media"
+                  name="media"
+                  multiple
+                  accept="image/*,video/*,audio/*"
+                />
+              </div>
+              <div id="newMediaPreview" class="media-preview"></div>
+            </div>
+
+            <div class="btn-group">
+              <button type="button" id="cancelBtn" class="btn btn-danger">
+                <i class="fas fa-times"></i> Hủy
+              </button>
+              <div class="btn-group-right">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save"></i> Lưu ghi chú
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div id="successModal" class="modal">
+        <div class="modal-content">
+          <h3 class="modal-title">
+            <i class="fas fa-check-circle"></i> Lưu ghi chú thành công
+          </h3>
+          <div class="modal-body">
+            <p>Ghi chú của bạn đã được cập nhật. Bạn có thể:</p>
+
+            <div class="link-group">
+              <p><i class="fas fa-link"></i> Link xem:</p>
+              <div class="link-container">
+                <input id="viewLink" type="text" readonly />
+                <button class="copy-btn" data-target="viewLink">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+
+              <p><i class="fas fa-key"></i> Link chỉnh sửa:</p>
+              <div class="link-container">
+                <input id="editLink" type="text" readonly />
+                <button class="copy-btn" data-target="editLink">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="continueEditingBtn" class="btn btn-secondary">
+              <i class="fas fa-edit"></i> Tiếp tục chỉnh sửa
+            </button>
+            <button id="viewNoteBtn" class="btn btn-primary">
+              <i class="fas fa-eye"></i> Xem ghi chú
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const editNoteForm = document.getElementById("editNoteForm");
+        const successModal = document.getElementById("successModal");
+        const viewLink = document.getElementById("viewLink");
+        const editLink = document.getElementById("editLink");
+        const viewNoteBtn = document.getElementById("viewNoteBtn");
+        const continueEditingBtn =
+          document.getElementById("continueEditingBtn");
+        const cancelBtn = document.getElementById("cancelBtn");
+        const mediaInput = document.getElementById("media");
+        const existingMediaPreview = document.getElementById(
+          "existingMediaPreview"
+        );
+        const newMediaPreview = document.getElementById("newMediaPreview");
+        const loading = document.getElementById("loading");
+        const noteEditor = document.getElementById("noteEditor");
+        const notFound = document.getElementById("notFound");
+        const viewNoteLink = document.getElementById("viewNoteLink");
+
+        let currentNote = null;
+        let newMediaFiles = [];
+        let deletedMediaIndexes = [];
+
+        // Lấy link chỉnh sửa từ URL
+        const getEditLinkFromUrl = () => {
+          const pathParts = window.location.pathname.split("/");
+          return pathParts[pathParts.length - 1];
+        };
+
+        const editLinkId = getEditLinkFromUrl();
+
+        // Hiển thị loading
+        loading.style.display = "flex";
+
+        // Hàm lấy dữ liệu ghi chú để chỉnh sửa
+        const fetchNote = async () => {
+          try {
+            const response = await fetch(`/api/notes/edit/${editLinkId}`);
+            const data = await response.json();
+
+            if (data.success) {
+              currentNote = data.note;
+              populateForm(currentNote);
+              loading.style.display = "none";
+              noteEditor.style.display = "block";
+              notFound.style.display = "none";
+
+              // Cập nhật link xem ghi chú
+              viewNoteLink.href = `/view/${currentNote.viewLink}`;
+            } else {
+              loading.style.display = "none";
+              noteEditor.style.display = "none";
+              notFound.style.display = "block";
+            }
+          } catch (error) {
+            console.error("Error fetching note:", error);
+            loading.style.display = "none";
+            noteEditor.style.display = "none";
+            notFound.style.display = "block";
+          }
+        };
+
+        // Điền dữ liệu vào form
+        const populateForm = (note) => {
+          document.getElementById("title").value = note.title;
+          document.getElementById("content").value = note.content;
+
+          // Hiển thị các file đa phương tiện hiện có
+          if (note.media && note.media.length > 0) {
+            existingMediaPreview.innerHTML = "";
+
+            note.media.forEach((media, index) => {
+              const mediaItem = document.createElement("div");
+              mediaItem.className = "media-item";
+              mediaItem.dataset.index = index;
+
+              if (media.type === "image") {
+                const img = document.createElement("img");
+                img.src = media.data;
+                mediaItem.appendChild(img);
+              } else if (media.type === "video") {
+                const video = document.createElement("video");
+                video.src = media.data;
+                video.controls = true;
+                mediaItem.appendChild(video);
+              } else if (media.type === "audio") {
+                const audio = document.createElement("audio");
+                audio.src = media.data;
+                audio.controls = true;
+                mediaItem.appendChild(audio);
+              }
+
+              // Nút xóa media
+              const removeBtn = document.createElement("button");
+              removeBtn.className = "remove-btn";
+              removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+              removeBtn.addEventListener("click", () => {
+                // Thêm index vào danh sách xóa
+                deletedMediaIndexes.push(index);
+                existingMediaPreview.removeChild(mediaItem);
+              });
+
+              mediaItem.appendChild(removeBtn);
+              existingMediaPreview.appendChild(mediaItem);
+            });
+          }
+        };
+
+        // Xử lý khi chọn file media mới
+        mediaInput.addEventListener("change", () => {
+          const files = mediaInput.files;
+
+          // Đọc và chuyển đổi từng file thành base64
+          Array.from(files).forEach((file) => {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+              const mediaItem = document.createElement("div");
+              mediaItem.className = "media-item";
+
+              const fileData = {
+                name: file.name,
+                type: file.type.split("/")[0], // 'image', 'video', 'audio'
+                data: e.target.result,
+              };
+
+              newMediaFiles.push(fileData);
+
+              // Tạo preview cho từng loại file
+              if (fileData.type === "image") {
+                const img = document.createElement("img");
+                img.src = fileData.data;
+                mediaItem.appendChild(img);
+              } else if (fileData.type === "video") {
+                const video = document.createElement("video");
+                video.src = fileData.data;
+                video.controls = true;
+                mediaItem.appendChild(video);
+              } else if (fileData.type === "audio") {
+                const audio = document.createElement("audio");
+                audio.src = fileData.data;
+                audio.controls = true;
+                mediaItem.appendChild(audio);
+              }
+
+              // Nút xóa
+              const removeBtn = document.createElement("button");
+              removeBtn.className = "remove-btn";
+              removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+              removeBtn.addEventListener("click", () => {
+                newMediaPreview.removeChild(mediaItem);
+                newMediaFiles = newMediaFiles.filter((f) => f !== fileData);
+              });
+
+              mediaItem.appendChild(removeBtn);
+              newMediaPreview.appendChild(mediaItem);
+            };
+
+            reader.readAsDataURL(file); // Đọc file dưới dạng base64
+          });
+        });
+
+        // Xử lý xóa media hiện có
+        const deleteExistingMedia = async (noteId, mediaIndex) => {
+          try {
+            const response = await fetch(
+              `/api/notes/${noteId}/media/${mediaIndex}`,
+              {
+                method: "DELETE",
+              }
+            );
+            return await response.json();
+          } catch (error) {
+            console.error("Error deleting media:", error);
+            return { success: false };
+          }
+        };
+
+        // Xử lý khi submit form cập nhật ghi chú
+        editNoteForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          // Hiển thị loading
+          loading.style.display = "flex";
+
+          try {
+            // Lấy dữ liệu từ form
+            const title = document.getElementById("title").value;
+            const content = document.getElementById("content").value;
+
+            // Xử lý xóa các file media đã chọn
+            if (deletedMediaIndexes.length > 0) {
+              // Sắp xếp theo thứ tự giảm dần để không ảnh hưởng đến index khi xóa
+              const sortedIndexes = [...deletedMediaIndexes].sort(
+                (a, b) => b - a
+              );
+
+              for (const index of sortedIndexes) {
+                await deleteExistingMedia(currentNote.id, index);
+              }
+            }
+
+            // Chuẩn bị dữ liệu để cập nhật
+            const updateData = {
+              title,
+              content,
+              type: "text", // Có thể thay đổi tùy theo yêu cầu
+              newMediaFiles: newMediaFiles,
+            };
+
+            // Gửi yêu cầu cập nhật
+            const response = await fetch(`/api/notes/${currentNote.id}`, {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(updateData),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              // Cập nhật currentNote với dữ liệu mới
+              currentNote = result.note;
+
+              // Cập nhật URLs trong modal
+              viewLink.value = window.location.origin + result.viewUrl;
+              editLink.value = window.location.origin + result.editUrl;
+
+              // Hiển thị modal thành công
+              successModal.style.display = "flex";
+
+              // Cập nhật link xem ghi chú
+              viewNoteLink.href = result.viewUrl;
+              viewNoteBtn.onclick = () =>
+                (window.location.href = result.viewUrl);
+
+              // Reset trạng thái
+              newMediaFiles = [];
+              deletedMediaIndexes = [];
+              newMediaPreview.innerHTML = "";
+            } else {
+              alert("Có lỗi xảy ra khi cập nhật ghi chú. Vui lòng thử lại.");
+            }
+          } catch (error) {
+            console.error("Error updating note:", error);
+            alert("Có lỗi xảy ra khi cập nhật ghi chú. Vui lòng thử lại.");
+          } finally {
+            loading.style.display = "none";
+          }
+        });
+
+        // Xử lý sự kiện cho các nút trong modal
+        continueEditingBtn.addEventListener("click", () => {
+          successModal.style.display = "none";
+          // Cập nhật lại preview với dữ liệu mới nhất
+          populateForm(currentNote);
+        });
+
+        viewNoteBtn.addEventListener("click", () => {
+          window.location.href = `/view/${currentNote.viewLink}`;
+        });
+
+        // Xử lý nút "Hủy"
+        cancelBtn.addEventListener("click", () => {
+          if (confirm("Bạn có chắc muốn hủy các thay đổi?")) {
+            window.location.href = "/";
+          }
+        });
+
+        // Xử lý copy URL
+        document.querySelectorAll(".copy-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const targetId = btn.dataset.target;
+            const input = document.getElementById(targetId);
+
+            // Copy text
+            input.select();
+            document.execCommand("copy");
+
+            // Hiệu ứng visual feedback
+            const originalIcon = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i>';
+
+            setTimeout(() => {
+              btn.innerHTML = originalIcon;
+            }, 1500);
+          });
+        });
+
+        // Khởi tạo trang - lấy dữ liệu ghi chú
+        fetchNote();
+      });
+    </script>
+  </body>
+</html>

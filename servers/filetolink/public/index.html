@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KzUploader - Dịch vụ lưu trữ file</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <header class="header">
+        <div class="logo">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <h1>KzUploader</h1>
+        </div>
+        <nav class="nav">
+          <a href="/" class="active">Trang chủ</a>
+          <a href="/kzkhanhh">Quản lý</a>
+        </nav>
+      </header>
+
+      <main class="main">
+        <section class="hero animate__animated animate__fadeIn">
+          <h2>Tải lên & Chia sẻ file của bạn</h2>
+          <p>Dịch vụ lưu trữ file miễn phí, an toàn với đường dẫn đẹp</p>
+        </section>
+
+        <section class="upload-container animate__animated animate__fadeInUp">
+          <div class="upload-area" id="drop-area">
+            <div class="upload-icon">
+              <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <p>Kéo & thả file vào đây hoặc</p>
+            <button id="select-file-btn" class="btn primary-btn">
+              <i class="fas fa-folder-open"></i> Chọn file
+            </button>
+            <input type="file" id="file-input" hidden />
+          </div>
+
+          <div
+            class="upload-progress"
+            id="upload-progress"
+            style="display: none"
+          >
+            <div class="progress-container">
+              <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <p id="progress-text">Đang tải lên... 0%</p>
+          </div>
+
+          <div class="upload-result" id="upload-result" style="display: none">
+            <div class="success-icon animate__animated animate__bounceIn">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>File đã được tải lên thành công!</h3>
+            <div class="file-info" id="file-info">
+              <!-- File info will be added here -->
+            </div>
+            <div class="result-actions">
+              <div class="link-container">
+                <input type="text" id="file-url" readonly />
+                <button id="copy-btn" class="btn secondary-btn">
+                  <i class="fas fa-copy"></i> Sao chép
+                </button>
+              </div>
+              <div class="action-buttons">
+                <a
+                  id="view-btn"
+                  href="#"
+                  class="btn primary-btn"
+                  target="_blank"
+                >
+                  <i class="fas fa-eye"></i> Xem
+                </a>
+                <button id="upload-another-btn" class="btn outline-btn">
+                  <i class="fas fa-upload"></i> Tải lên file khác
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="features animate__animated animate__fadeInUp">
+          <div class="feature">
+            <div class="feature-icon">
+              <i class="fas fa-link"></i>
+            </div>
+            <h3>Đường dẫn đẹp</h3>
+            <p>Tạo đường dẫn ngắn gọn, dễ nhớ</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">
+              <i class="fas fa-file-alt"></i>
+            </div>
+            <h3>Hỗ trợ nhiều định dạng</h3>
+            <p>Tải lên hình ảnh, video, tài liệu và nhiều hơn nữa</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">
+              <i class="fas fa-download"></i>
+            </div>
+            <h3>Dễ dàng tải xuống</h3>
+            <p>Tải xuống file nhanh chóng, không giới hạn</p>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <p>&copy; 2025 KzUploader - Dịch vụ lưu trữ file</p>
+      </footer>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

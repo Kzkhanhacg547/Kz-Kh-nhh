@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KzUploader - Quản lý file</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <header class="header">
+        <div class="logo">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <h1>KzUploader</h1>
+        </div>
+        <nav class="nav">
+          <a href="/">Trang chủ</a>
+          <a href="/kzkhanhh" class="active">Quản lý</a>
+          <button id="logout-btn" class="btn small-btn danger-btn">
+            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+          </button>
+        </nav>
+      </header>
+
+      <main class="main">
+        <section class="admin-header animate__animated animate__fadeIn">
+          <h2>Quản lý file</h2>
+          <div class="admin-search">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input
+                type="text"
+                id="search-input"
+                placeholder="Tìm kiếm theo tên file..."
+              />
+            </div>
+            <div class="filter-box">
+              <select id="filter-type">
+                <option value="all">Tất cả loại file</option>
+                <option value="image">Hình ảnh</option>
+                <option value="video">Video</option>
+                <option value="audio">Âm thanh</option>
+                <option value="document">Tài liệu</option>
+                <option value="archive">File nén</option>
+                <option value="code">Mã nguồn</option>
+                <option value="other">Khác</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section
+          class="file-table-container animate__animated animate__fadeInUp"
+        >
+          <div class="table-header">
+            <div class="table-info">
+              <span id="file-count">0 file</span>
+            </div>
+            <button id="refresh-btn" class="btn secondary-btn">
+              <i class="fas fa-sync-alt"></i> Làm mới
+            </button>
+          </div>
+
+          <div class="file-table-wrapper">
+            <table class="file-table">
+              <thead>
+                <tr>
+                  <th>Tên file</th>
+                  <th>Loại</th>
+                  <th>Kích thước</th>
+                  <th>Ngày tải lên</th>
+                  <th>Hành động</th>
+                </tr>
+              </thead>
+              <tbody id="file-list">
+                <!-- Danh sách file sẽ được thêm vào đây -->
+                <tr class="loading-row">
+                  <td colspan="5" class="loading-cell">
+                    <div class="loading-spinner">
+                      <i class="fas fa-spinner fa-spin"></i>
+                      <p>Đang tải danh sách file...</p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+
+      <div id="confirm-dialog" class="modal">
+        <div class="modal-content animate__animated animate__zoomIn">
+          <div class="modal-header">
+            <h3>Xác nhận xóa</h3>
+            <button class="close-btn">&times;</button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Bạn có chắc chắn muốn xóa file này? Hành động này không thể hoàn
+              tác.
+            </p>
+            <div class="file-to-delete" id="file-to-delete"></div>
+          </div>
+          <div class="modal-footer">
+            <button id="cancel-delete-btn" class="btn outline-btn">Hủy</button>
+            <button id="confirm-delete-btn" class="btn danger-btn">Xóa</button>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <p>&copy; 2025 KzUploader - Dịch vụ lưu trữ file</p>
+      </footer>
+    </div>
+
+    <script>
+      // Khai báo các biến và phần tử DOM
+const fileListElement = document.getElementById("file-list");
+const fileCountElement = document.getElementById("file-count");
+const searchInput = document.getElementById("search-input");
+const filterType = document.getElementById("filter-type");
+const refreshBtn = document.getElementById("refresh-btn");
+const logoutBtn = document.getElementById("logout-btn");
+const confirmDialog = document.getElementById("confirm-dialog");
+const closeBtn = document.querySelector(".close-btn");
+const cancelDeleteBtn = document.getElementById("cancel-delete-btn");
+const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
+const fileToDeleteElement = document.getElementById("file-to-delete");
+
+// Biến lưu trữ thông tin file đang được chọn để xóa
+let currentFileToDelete = null;
+// Biến lưu trữ danh sách file đã tải lên
+let allFiles = [];
+
+// Hàm chuyển đổi byte sang đơn vị đo lường dễ đọc
+function formatFileSize(bytes) {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+}
+
+// Hàm định dạng ngày giờ
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear();
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  return `${day}/${month}/${year} ${hours}:${minutes}`;
+}
+
+// Hàm xác định loại file dựa vào MIME type
+function getFileCategory(mimeType) {
+  if (mimeType.startsWith("image/")) return "image";
+  if (mimeType.startsWith("video/")) return "video";
+  if (mimeType.startsWith("audio/")) return "audio";
+  if (
+    mimeType.startsWith("application/pdf") ||
+    mimeType.includes("document") ||
+    mimeType.includes("sheet") ||
+    mimeType.includes("presentation") ||
+    mimeType.includes("text/")
+  )
+    return "document";
+  if (
+    mimeType.includes("zip") ||
+    mimeType.includes("rar") ||
+    mimeType.includes("x-tar") ||
+    mimeType.includes("x-7z")
+  )
+    return "archive";
+  if (
+    mimeType.includes("javascript") ||
+    mimeType.includes("json") ||
+    mimeType.includes("xml") ||
+    mimeType.includes("html") ||
+    mimeType.includes("css") ||
+    mimeType.includes("php") ||
+    mimeType.includes("java") ||
+    mimeType.includes("python")
+  )
+    return "code";
+  return "other";
+}
+
+// Hàm lấy icon dựa vào mimetype
+function getFileIcon(mimeType) {
+  const category = getFileCategory(mimeType);
+
+  switch (category) {
+    case "image":
+      return '<i class="fas fa-image"></i>';
+    case "video":
+      return '<i class="fas fa-video"></i>';
+    case "audio":
+      return '<i class="fas fa-music"></i>';
+    case "document":
+      if (mimeType.includes("pdf")) {
+        return '<i class="fas fa-file-pdf"></i>';
+      } else if (mimeType.includes("word") || mimeType.includes("document")) {
+        return '<i class="fas fa-file-word"></i>';
+      } else if (mimeType.includes("excel") || mimeType.includes("sheet")) {
+        return '<i class="fas fa-file-excel"></i>';
+      } else if (
+        mimeType.includes("powerpoint") ||
+        mimeType.includes("presentation")
+      ) {
+        return '<i class="fas fa-file-powerpoint"></i>';
+      } else {
+        return '<i class="fas fa-file-alt"></i>';
+      }
+    case "archive":
+      return '<i class="fas fa-file-archive"></i>';
+    case "code":
+      return '<i class="fas fa-file-code"></i>';
+    default:
+      return '<i class="fas fa-file"></i>';
+  }
+}
+
+// Hàm hiển thị danh sách file
+function renderFileList(files) {
+  // Cập nhật số lượng file
+  fileCountElement.textContent = `${files.length} file`;
+
+  // Nếu không có file nào, hiển thị thông báo
+  if (files.length === 0) {
+    fileListElement.innerHTML = `
+      <tr>
+        <td colspan="5" class="empty-table">
+          <div class="empty-message">
+            <i class="fas fa-folder-open"></i>
+            <p>Không có file nào được tìm thấy</p>
+          </div>
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  // Tạo HTML cho mỗi file
+  let html = "";
+  files.forEach((file) => {
+    const fileIcon = getFileIcon(file.type);
+
+    html += `
+      <tr data-id="${file.id}" data-category="${getFileCategory(file.type)}">
+        <td class="file-name-cell">
+          <div class="file-name">
+            ${fileIcon}
+            <span title="${file.name}">${file.name}</span>
+          </div>
+        </td>
+        <td class="file-type-cell">${file.type}</td>
+        <td class="file-size-cell">${formatFileSize(file.size)}</td>
+        <td class="file-date-cell">${formatDate(file.uploadDate)}</td>
+        <td class="file-actions-cell">
+          <div class="action-buttons">
+            <a href="/kzkhanhh/${
+              file.id
+            }" target="_blank" class="btn small-btn primary-btn" title="Xem">
+              <i class="fas fa-eye"></i>
+            </a>
+            <button class="btn small-btn danger-btn delete-btn" title="Xóa" data-id="${
+              file.id
+            }" data-name="${file.name}">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  });
+
+  fileListElement.innerHTML = html;
+
+  // Thêm sự kiện xóa file
+  document.querySelectorAll(".delete-btn").forEach((button) => {
+    button.addEventListener("click", (e) => {
+      const fileId = e.currentTarget.getAttribute("data-id");
+      const fileName = e.currentTarget.getAttribute("data-name");
+      showDeleteConfirmation(fileId, fileName);
+    });
+  });
+}
+
+// Hàm lọc và tìm kiếm file
+function filterFiles() {
+  const searchTerm = searchInput.value.toLowerCase();
+  const filterValue = filterType.value;
+
+  let filteredFiles = [...allFiles];
+
+  // Áp dụng bộ lọc loại file
+  if (filterValue !== "all") {
+    filteredFiles = filteredFiles.filter(
+      (file) => getFileCategory(file.type) === filterValue
+    );
+  }
+
+  // Áp dụng bộ lọc tìm kiếm
+  if (searchTerm) {
+    filteredFiles = filteredFiles.filter((file) =>
+      file.name.toLowerCase().includes(searchTerm)
+    );
+  }
+
+  renderFileList(filteredFiles);
+}
+
+// Hàm tải danh sách file từ server
+async function loadFiles() {
+  try {
+    // Hiển thị thông báo đang tải
+    fileListElement.innerHTML = `
+      <tr class="loading-row">
+        <td colspan="5" class="loading-cell">
+          <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Đang tải danh sách file...</p>
+          </div>
+        </td>
+      </tr>
+    `;
+
+    // Gọi API lấy danh sách file
+    const response = await fetch("/api/files");
+
+    // Nếu không thành công, chuyển hướng về trang đăng nhập
+    if (response.status === 401) {
+      window.location.href = "/kzkhanhh/login";
+      return;
+    }
+
+    // Xử lý lỗi khác
+    if (!response.ok) {
+      throw new Error("Không thể tải danh sách file");
+    }
+
+    // Lấy dữ liệu và hiển thị
+    allFiles = await response.json();
+    allFiles.sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate)); // Sắp xếp mới nhất lên đầu
+    renderFileList(allFiles);
+  } catch (error) {
+    console.error("Lỗi khi tải danh sách file:", error);
+    fileListElement.innerHTML = `
+      <tr>
+        <td colspan="5" class="error-cell">
+          <div class="error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            <p>Đã xảy ra lỗi: ${error.message}</p>
+            <button id="retry-btn" class="btn small-btn primary-btn">Thử lại</button>
+          </div>
+        </td>
+      </tr>
+    `;
+
+    // Thêm sự kiện thử lại
+    document.getElementById("retry-btn")?.addEventListener("click", loadFiles);
+  }
+}
+
+// Hàm hiển thị xác nhận xóa file
+function showDeleteConfirmation(fileId, fileName) {
+  // Lưu thông tin file hiện tại
+  currentFileToDelete = { id: fileId, name: fileName };
+
+  // Hiển thị thông tin file sẽ bị xóa
+  fileToDeleteElement.innerHTML = `
+    <div class="file-info">
+      <i class="fas fa-file"></i>
+      <span>${fileName}</span>
+    </div>
+  `;
+
+  // Hiển thị hộp thoại xác nhận
+  confirmDialog.style.display = "flex";
+
+  // Thêm hiệu ứng
+  setTimeout(() => {
+    confirmDialog
+      .querySelector(".modal-content")
+      .classList.add("animate__animated", "animate__zoomIn");
+  }, 10);
+}
+
+// Hàm ẩn hộp thoại xác nhận
+function hideDeleteConfirmation() {
+  // Ẩn hiệu ứng
+  const modalContent = confirmDialog.querySelector(".modal-content");
+  modalContent.classList.remove("animate__zoomIn");
+  modalContent.classList.add("animate__zoomOut");
+
+  // Đợi hiệu ứng hoàn thành rồi ẩn hộp thoại
+  setTimeout(() => {
+    confirmDialog.style.display = "none";
+    modalContent.classList.remove("animate__zoomOut");
+    currentFileToDelete = null;
+  }, 300);
+}
+
+// Hàm xóa file
+async function deleteFile() {
+  if (!currentFileToDelete) return;
+
+  try {
+    // Hiển thị đang xóa
+    confirmDeleteBtn.innerHTML =
+      '<i class="fas fa-spinner fa-spin"></i> Đang xóa...';
+    confirmDeleteBtn.disabled = true;
+
+    // Gọi API xóa file
+    const response = await fetch(`/api/file/${currentFileToDelete.id}`, {
+      method: "DELETE",
+    });
+
+    // Xử lý lỗi
+    if (!response.ok) {
+      throw new Error("Không thể xóa file");
+    }
+
+    // Ẩn hộp thoại xác nhận
+    hideDeleteConfirmation();
+
+    // Thông báo thành công
+    showNotification("File đã được xóa thành công", "success");
+
+    // Tải lại danh sách file
+    loadFiles();
+  } catch (error) {
+    console.error("Lỗi khi xóa file:", error);
+    showNotification("Đã xảy ra lỗi khi xóa file", "error");
+
+    // Khôi phục nút xóa
+    confirmDeleteBtn.innerHTML = "Xóa";
+    confirmDeleteBtn.disabled = false;
+  }
+}
+
+// Hàm hiển thị thông báo
+function showNotification(message, type = "info") {
+  // Kiểm tra và xóa thông báo cũ nếu có
+  const existingNotification = document.querySelector(".notification");
+  if (existingNotification) {
+    existingNotification.remove();
+  }
+
+  // Tạo thông báo mới
+  const notification = document.createElement("div");
+  notification.className = `notification ${type} animate__animated animate__fadeInDown`;
+
+  // Chọn icon tùy theo loại thông báo
+  let icon;
+  switch (type) {
+    case "success":
+      icon = '<i class="fas fa-check-circle"></i>';
+      break;
+    case "error":
+      icon = '<i class="fas fa-exclamation-circle"></i>';
+      break;
+    default:
+      icon = '<i class="fas fa-info-circle"></i>';
+  }
+
+  // Thêm nội dung
+  notification.innerHTML = `
+    ${icon}
+    <span>${message}</span>
+    <button class="notification-close">
+      <i class="fas fa-times"></i>
+    </button>
+  `;
+
+  // Thêm vào DOM
+  document.body.appendChild(notification);
+
+  // Thêm sự kiện đóng thông báo
+  notification
+    .querySelector(".notification-close")
+    .addEventListener("click", () => {
+      notification.classList.replace(
+        "animate__fadeInDown",
+        "animate__fadeOutUp"
+      );
+      setTimeout(() => {
+        notification.remove();
+      }, 300);
+    });
+
+  // Tự động ẩn sau 5 giây
+  setTimeout(() => {
+    if (document.body.contains(notification)) {
+      notification.classList.replace(
+        "animate__fadeInDown",
+        "animate__fadeOutUp"
+      );
+      setTimeout(() => {
+        notification.remove();
+      }, 300);
+    }
+  }, 5000);
+}
+
+// Hàm đăng xuất
+async function logout() {
+  try {
+    // Gọi API đăng xuất
+    await fetch("/api/logout");
+
+    // Chuyển hướng về trang đăng nhập
+    window.location.href = "/kzkhanhh/login";
+  } catch (error) {
+    console.error("Lỗi khi đăng xuất:", error);
+    showNotification("Đã xảy ra lỗi khi đăng xuất", "error");
+  }
+}
+
+// Đăng ký các sự kiện
+window.addEventListener("DOMContentLoaded", () => {
+  // Tải danh sách file khi trang được tải
+  loadFiles();
+
+  // Tìm kiếm và lọc file
+  searchInput.addEventListener("input", filterFiles);
+  filterType.addEventListener("change", filterFiles);
+
+  // Làm mới danh sách file
+  refreshBtn.addEventListener("click", loadFiles);
+
+  // Xử lý xóa file
+  confirmDeleteBtn.addEventListener("click", deleteFile);
+  closeBtn.addEventListener("click", hideDeleteConfirmation);
+  cancelDeleteBtn.addEventListener("click", hideDeleteConfirmation);
+
+  // Đóng hộp thoại khi click bên ngoài
+  confirmDialog.addEventListener("click", (event) => {
+    if (event.target === confirmDialog) {
+      hideDeleteConfirmation();
+    }
+  });
+
+  // Đăng xuất
+  logoutBtn.addEventListener("click", logout);
+
+  // Thêm phím tắt ESC để đóng hộp thoại
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && confirmDialog.style.display === "flex") {
+      hideDeleteConfirmation();
+    }
+  });
+});
+    </script>
+  </body>
+</html>

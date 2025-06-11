@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KzUploader - Đăng nhập</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <header class="header">
+        <div class="logo">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <h1>KzUploader</h1>
+        </div>
+        <nav class="nav">
+          <a href="/">Trang chủ</a>
+        </nav>
+      </header>
+
+      <main class="main">
+        <div class="login-container animate__animated animate__fadeIn">
+          <div class="login-card">
+            <div class="login-header">
+              <i class="fas fa-lock"></i>
+              <h2>Đăng nhập</h2>
+              <p>Đăng nhập để quản lý file của bạn</p>
+            </div>
+
+            <form id="login-form" class="login-form">
+              <div class="form-group">
+                <label for="username">Tên đăng nhập</label>
+                <div class="input-icon">
+                  <i class="fas fa-user"></i>
+                  <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Nhập tên đăng nhập"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="password">Mật khẩu</label>
+                <div class="input-icon">
+                  <i class="fas fa-key"></i>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Nhập mật khẩu"
+                    required
+                  />
+                  <button
+                    type="button"
+                    id="toggle-password"
+                    class="toggle-password"
+                  >
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="login-error" id="login-error" style="display: none">
+                Tên đăng nhập hoặc mật khẩu không đúng
+              </div>
+
+              <button type="submit" class="btn primary-btn login-btn">
+                <i class="fas fa-sign-in-alt"></i> Đăng nhập
+              </button>
+            </form>
+
+            <div class="login-footer">
+              <a href="/">Quay lại trang chủ</a>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="footer">
+        <p>&copy; 2025 KzUploader - Dịch vụ lưu trữ file</p>
+      </footer>
+    </div>
+
+    <script src="/login.js"></script>
+  </body>
+</html>

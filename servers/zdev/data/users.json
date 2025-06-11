@@ -1,0 +1,18 @@
+[
+  {
+    "id": "admin",
+    "username": "admin",
+    "email": "kzemytb547@gmail.com",
+    "password": "$2b$10$EGXX7duSvcMQH5mydE2llOtOR2JQfMDR8Q2VjSaE4OwBA9Fl1y8mO",
+    "role": "admin",
+    "createdAt": "2025-06-11T03:02:00.964Z"
+  },
+  {
+    "id": "46bfd08a-a36b-4281-af99-499f2a8d685b",
+    "username": "kzkhanhh",
+    "email": "kjem54774@outlook.com",
+    "password": "$2b$10$ZC9aCKerez2tGuWBLDWNkOUhURkD26wghFHoin1JHGTdiUunFDCoG",
+    "role": "user",
+    "createdAt": "2025-06-11T03:21:56.806Z"
+  }
+]

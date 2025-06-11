@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notes Creator - Kz</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary-color: #6a11cb;
+        --secondary-color: #2575fc;
+        --dark-bg: #1a1a2e;
+        --light-bg: #f5f5f7;
+        --text-light: #e6e6e6;
+        --text-dark: #222;
+        --accent: #9d4edd;
+        --danger: #ff5e7d;
+        --success: #00d46a;
+        --box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+        --gradient: linear-gradient(
+          45deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        --gradient-hover: linear-gradient(45deg, #5610b2, #1d5dcb);
+        --transition: all 0.3s ease;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: var(--light-bg);
+        color: var(--text-dark);
+        min-height: 100vh;
+        line-height: 1.6;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%236a11cb' fill-opacity='0.05'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* Header */
+      .header {
+        background: var(--dark-bg);
+        color: var(--text-light);
+        padding: 15px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: var(--box-shadow);
+        border-bottom: 2px solid var(--accent);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 0 20px;
+      }
+
+      .logo img {
+        height: 40px;
+        filter: drop-shadow(0 0 5px var(--accent));
+      }
+
+      .logo h1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        letter-spacing: 1px;
+      }
+
+      .nav ul {
+        display: flex;
+        list-style: none;
+        gap: 30px;
+        padding: 0 20px;
+      }
+
+      .nav a {
+        color: var(--text-light);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 1.1rem;
+        position: relative;
+        padding: 5px 0;
+        transition: var(--transition);
+      }
+
+      .nav a:hover,
+      .nav a.active {
+        color: var(--secondary-color);
+      }
+
+      .nav a::after {
+        content: "";
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--gradient);
+        transition: var(--transition);
+      }
+
+      .nav a:hover::after,
+      .nav a.active::after {
+        width: 100%;
+      }
+
+      /* Main Content */
+      .main {
+        padding: 40px 0;
+        min-height: calc(100vh - 150px);
+      }
+
+      /* Hero Section */
+      .hero {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 40px 20px;
+        border-radius: 12px;
+        background: var(--gradient);
+        color: white;
+        box-shadow: var(--box-shadow);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath fill-rule='evenodd' d='M0 0h40v40H0V0zm40 40h40v40H40V40zm0-40h2l-2 2V0zm0 4l4-4h2l-6 6V4zm0 4l8-8h2L40 10V8zm0 4L52 0h2L40 14v-2zm0 4L56 0h2L40 18v-2zm0 4L60 0h2L40 22v-2zm0 4L64 0h2L40 26v-2zm0 4L68 0h2L40 30v-2zm0 4L72 0h2L40 34v-2zm0 4L76 0h2L40 38v-2zm0 4L80 0v2L42 40h-2zm4 0L80 4v2L46 40h-2zm4 0L80 8v2L50 40h-2zm4 0l28-28v2L54 40h-2zm4 0l24-24v2L58 40h-2zm4 0l20-20v2L62 40h-2zm4 0l16-16v2L66 40h-2zm4 0l12-12v2L70 40h-2zm4 0l8-8v2l-6 6h-2zm4 0l4-4v2l-2 2h-2z'/%3E%3C/g%3E%3C/svg%3E");
+        z-index: 0;
+      }
+
+      .hero h2 {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero p {
+        font-size: 1.2rem;
+        max-width: 700px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Note Creator Section */
+      .note-creator {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: var(--box-shadow);
+        overflow: hidden;
+        margin-bottom: 40px;
+      }
+
+      .note-form {
+        padding: 30px;
+      }
+
+      .form-group {
+        margin-bottom: 25px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: var(--dark-bg);
+      }
+
+      .form-group input[type="text"],
+      .form-group textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        background-color: #f9f9f9;
+        transition: var(--transition);
+        font-size: 1rem;
+      }
+
+      .form-group input[type="text"]:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+      }
+
+      .form-group input[type="file"] {
+        width: 100%;
+        padding: 12px 15px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        border: 1px dashed #ddd;
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+
+      .media-preview {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 15px;
+      }
+
+      .media-item {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .media-item img,
+      .media-item video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .media-item audio {
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+      }
+
+      .remove-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: var(--danger);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0.8;
+        transition: var(--transition);
+      }
+
+      .remove-btn:hover {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .btn {
+        padding: 12px 25px;
+        border-radius: 8px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: 1rem;
+      }
+
+      .btn-primary {
+        background: var(--gradient);
+        color: white;
+        box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+      }
+
+      .btn-primary:hover {
+        background: var(--gradient-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(106, 17, 203, 0.4);
+      }
+
+      .btn-secondary {
+        background-color: #eee;
+        color: var(--text-dark);
+      }
+
+      .btn-secondary:hover {
+        background-color: #ddd;
+      }
+
+      /* Success Modal */
+      .success-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        backdrop-filter: blur(5px);
+      }
+
+      .modal-content {
+        background-color: white;
+        width: 90%;
+        max-width: 500px;
+        border-radius: 12px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        padding: 30px;
+        animation: modalFadeIn 0.3s;
+        border-top: 4px solid var(--primary-color);
+      }
+
+      @keyframes modalFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modal-content h3 {
+        margin-bottom: 15px;
+        color: var(--primary-color);
+        font-size: 1.6rem;
+      }
+
+      .modal-content p {
+        margin-bottom: 20px;
+        color: var(--text-dark);
+      }
+
+      .links {
+        margin-bottom: 25px;
+      }
+
+      .link-item {
+        margin-bottom: 15px;
+      }
+
+      .link-item span {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+
+      .link-box {
+        display: flex;
+        align-items: center;
+      }
+
+      .link-box input {
+        flex: 1;
+        padding: 10px 15px;
+        border-radius: 8px 0 0 8px;
+        border: 1px solid #ddd;
+        background-color: #f5f5f7;
+        font-size: 0.9rem;
+      }
+
+      .copy-btn {
+        background-color: var(--secondary-color);
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 0 8px 8px 0;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .copy-btn:hover {
+        background-color: var(--primary-color);
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: flex-end;
+      }
+
+      /* Footer */
+      .footer {
+        background-color: var(--dark-bg);
+        color: var(--text-light);
+        text-align: center;
+        padding: 20px 0;
+        margin-top: auto;
+        border-top: 2px solid var(--accent);
+      }
+
+      .footer p {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
+      /* Responsive Styles */
+      @media (max-width: 768px) {
+        .header {
+          flex-direction: column;
+          padding: 15px 0;
+        }
+
+        .logo {
+          margin-bottom: 15px;
+        }
+
+        .hero h2 {
+          font-size: 2rem;
+        }
+
+        .hero p {
+          font-size: 1rem;
+        }
+
+        .modal-actions {
+          flex-direction: column;
+        }
+
+        .modal-actions .btn {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .nav ul {
+          gap: 15px;
+        }
+
+        .note-form {
+          padding: 20px;
+        }
+
+        .hero {
+          padding: 30px 15px;
+        }
+
+        .media-item {
+          width: 100px;
+          height: 100px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <div class="logo">
+          <img src="https://i.imgur.com/SAj7oIM.png" alt="Notes Creator Logo" />
+          <h1>Notes Creator</h1>
+        </div>
+        <nav class="nav">
+          <ul>
+            <li><a href="/" class="active">Trang chủ</a></li>
+            <li><a href="/admin">Admin</a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <main class="main">
+        <section class="hero">
+          <h2>Tạo ghi chú của bạn</h2>
+          <p>Dễ dàng tạo, chia sẻ và chỉnh sửa ghi chú với đa dạng nội dung</p>
+        </section>
+
+        <section class="note-creator">
+          <div class="note-form">
+            <form id="newNoteForm">
+              <div class="form-group">
+                <label for="title">Tiêu đề</label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  required
+                  placeholder="Nhập tiêu đề ghi chú"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="content">Nội dung</label>
+                <textarea
+                  id="content"
+                  name="content"
+                  rows="8"
+                  required
+                  placeholder="Nhập nội dung ghi chú"
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="media">Thêm tệp đa phương tiện</label>
+                <input
+                  type="file"
+                  id="media"
+                  name="media"
+                  multiple
+                  accept="image/*,video/*,audio/*"
+                />
+                <div class="media-preview" id="mediaPreview"></div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                  Tạo ghi chú
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="success-modal" id="successModal">
+          <div class="modal-content">
+            <h3>Ghi chú đã được tạo!</h3>
+            <p>Lưu lại các liên kết sau để truy cập ghi chú của bạn:</p>
+
+            <div class="links">
+              <div class="link-item">
+                <span>Liên kết xem:</span>
+                <div class="link-box">
+                  <input type="text" id="viewLink" readonly />
+                  <button class="copy-btn" data-target="viewLink">
+                    <i class="fas fa-copy"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="link-item">
+                <span>Liên kết chỉnh sửa:</span>
+                <div class="link-box">
+                  <input type="text" id="editLink" readonly />
+                  <button class="copy-btn" data-target="editLink">
+                    <i class="fas fa-copy"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-actions">
+              <button id="viewNoteBtn" class="btn">Xem ghi chú</button>
+              <button id="closeModalBtn" class="btn btn-secondary">Đóng</button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <p>&copy; 2025 Notes Creator - Bản quyền thuộc về Kz Khánhh</p>
+      </footer>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const newNoteForm = document.getElementById("newNoteForm");
+        const successModal = document.getElementById("successModal");
+        const viewLink = document.getElementById("viewLink");
+        const editLink = document.getElementById("editLink");
+        const viewNoteBtn = document.getElementById("viewNoteBtn");
+        const closeModalBtn = document.getElementById("closeModalBtn");
+        const mediaInput = document.getElementById("media");
+        const mediaPreview = document.getElementById("mediaPreview");
+
+        // Mảng chứa các file media đã xử lý dưới dạng base64
+        let mediaFiles = [];
+
+        // Chuyển file thành base64
+        const fileToBase64 = (file) => {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+          });
+        };
+
+        // Xử lý khi chọn file media
+        mediaInput.addEventListener("change", async () => {
+          const files = mediaInput.files;
+
+          // Xóa preview cũ
+          mediaPreview.innerHTML = "";
+
+          // Xử lý từng file và chuyển thành base64
+          for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const fileType = file.type.split("/")[0]; // 'image', 'video', 'audio'
+
+            try {
+              // Chuyển file thành base64
+              const base64Data = await fileToBase64(file);
+
+              // Thêm vào mảng mediaFiles
+              mediaFiles.push({
+                name: file.name,
+                type: fileType,
+                data: base64Data,
+              });
+
+              // Tạo preview
+              const mediaItem = document.createElement("div");
+              mediaItem.className = "media-item";
+
+              if (fileType === "image") {
+                const img = document.createElement("img");
+                img.src = base64Data;
+                mediaItem.appendChild(img);
+              } else if (fileType === "video") {
+                const video = document.createElement("video");
+                video.src = base64Data;
+                video.controls = true;
+                mediaItem.appendChild(video);
+              } else if (fileType === "audio") {
+                const audio = document.createElement("audio");
+                audio.src = base64Data;
+                audio.controls = true;
+                mediaItem.appendChild(audio);
+              }
+
+              // Nút xóa
+              const removeBtn = document.createElement("button");
+              removeBtn.className = "remove-btn";
+              removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+              removeBtn.addEventListener("click", () => {
+                mediaPreview.removeChild(mediaItem);
+                mediaFiles = mediaFiles.filter(
+                  (item) => item.data !== base64Data
+                );
+              });
+
+              mediaItem.appendChild(removeBtn);
+              mediaPreview.appendChild(mediaItem);
+            } catch (error) {
+              console.error("Error processing file:", error);
+            }
+          }
+
+          // Reset input để có thể chọn lại cùng file nếu muốn
+          mediaInput.value = "";
+        });
+
+        // Xử lý khi gửi form
+        newNoteForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const title = document.getElementById("title").value;
+          const content = document.getElementById("content").value;
+
+          // Chuẩn bị dữ liệu để gửi
+          const noteData = {
+            title,
+            content,
+            type: "note",
+            mediaFiles,
+          };
+
+          try {
+            const response = await fetch("/api/notes", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(noteData),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+              // Hiển thị modal thành công
+              viewLink.value = window.location.origin + data.viewUrl;
+              editLink.value = window.location.origin + data.editUrl;
+
+              viewNoteBtn.addEventListener("click", () => {
+                window.location.href = data.viewUrl;
+              });
+
+              successModal.style.display = "flex";
+
+              // Reset form
+              newNoteForm.reset();
+              mediaPreview.innerHTML = "";
+              mediaFiles = [];
+            } else {
+              alert("Lỗi: " + data.message);
+            }
+          } catch (error) {
+            console.error("Error creating note:", error);
+            alert("Không thể tạo ghi chú. Vui lòng thử lại sau.");
+          }
+        });
+
+        // Đóng modal
+        closeModalBtn.addEventListener("click", () => {
+          successModal.style.display = "none";
+        });
+
+        // Xử lý nút sao chép
+        document.querySelectorAll(".copy-btn").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const targetId = this.getAttribute("data-target");
+            const inputElement = document.getElementById(targetId);
+            inputElement.select();
+            document.execCommand("copy");
+
+            // Hiển thị thông báo đã sao chép
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-check"></i>';
+            setTimeout(() => {
+              this.innerHTML = originalText;
+            }, 1500);
+          });
+        });
+
+        // Đóng modal khi click bên ngoài
+        window.addEventListener("click", (e) => {
+          if (e.target === successModal) {
+            successModal.style.display = "none";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

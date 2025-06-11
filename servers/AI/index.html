@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trò chuyện với Linh Đan</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #ff6b9d;
+        --secondary-color: #ffb3c6;
+        --background-light: #fff9fc;
+        --text-dark: #333333;
+        --chat-bg: #fff;
+        --message-sent: #e1f5fe;
+        --message-received: #fce4ec;
+      }
+
+      body {
+        background-color: var(--background-light);
+        font-family: "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+        color: var(--text-dark);
+        overflow-x: hidden;
+      }
+
+      .chat-container {
+        background: var(--chat-bg);
+        border-radius: 12px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .chat-header {
+        background: linear-gradient(to right, #ff6b9d, #ffb3c6);
+        border-radius: 12px 12px 0 0;
+      }
+
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid white;
+      }
+
+      #chat-messages {
+        background: var(--background-light);
+        border-radius: 0;
+        scrollbar-width: thin;
+        scrollbar-color: var(--secondary-color) transparent;
+      }
+
+      .user-message {
+        background: var(--message-sent);
+        border-radius: 18px 18px 4px 18px;
+        color: var(--text-dark);
+        max-width: 70%;
+        align-self: flex-end;
+        word-break: break-word;
+      }
+
+      .ai-message {
+        background: var(--message-received);
+        border-radius: 18px 18px 18px 4px;
+        color: var(--text-dark);
+        max-width: 70%;
+        align-self: flex-start;
+        word-break: break-word;
+      }
+
+      .ai-message strong {
+        color: #e91e63;
+        font-weight: 600;
+      }
+
+      .chat-input-container {
+        background-color: white;
+        border-radius: 0 0 12px 12px;
+        border-top: 1px solid #f0f0f0;
+      }
+
+      #message-input {
+        background: white;
+        border: 1px solid #e0e0e0;
+        color: var(--text-dark);
+        transition: all 0.3s ease;
+        border-radius: 20px;
+      }
+
+      #message-input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 5px rgba(255, 107, 157, 0.3);
+      }
+
+      #send-btn {
+        background: var(--primary-color);
+        color: white;
+        transition: all 0.3s ease;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #send-btn:hover {
+        background: #e91e63;
+        transform: scale(1.05);
+      }
+
+      .typing-indicator {
+        color: #666;
+        font-style: italic;
+        font-size: 0.85rem;
+      }
+
+      .message-time {
+        font-size: 0.7rem;
+        color: #888;
+        margin-top: 2px;
+      }
+
+      /* Video styling */
+      .video-container {
+        display: flex;
+        flex-direction: column;
+        margin-top: 10px;
+        gap: 10px;
+      }
+
+      .video-card {
+        display: flex;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+
+      .video-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      .video-thumbnail {
+        width: 120px;
+        height: 68px;
+        object-fit: cover;
+      }
+
+      .video-info {
+        padding: 8px;
+        flex: 1;
+      }
+
+      .video-title {
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 4px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+
+      .video-channel {
+        font-size: 0.75rem;
+        color: #666;
+      }
+
+      /* SoundCloud styling */
+      .soundcloud-container {
+        display: flex;
+        flex-direction: column;
+        margin-top: 10px;
+        gap: 10px;
+      }
+
+      .track-card {
+        display: flex;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+
+      .track-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      .track-artwork {
+        width: 68px;
+        height: 68px;
+        object-fit: cover;
+      }
+
+      .track-info {
+        padding: 8px;
+        flex: 1;
+      }
+
+      .track-title {
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 4px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+
+      .track-artist {
+        font-size: 0.75rem;
+        color: #666;
+      }
+
+      .track-duration {
+        font-size: 0.7rem;
+        color: #999;
+        margin-top: 2px;
+      }
+
+      .track-player-container {
+        width: 100%;
+        margin-top: 10px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .track-player {
+        width: 100%;
+        height: 166px;
+        border: none;
+      }
+
+      /* Video control styling */
+      .video-embed-container,
+      .track-embed-container {
+        position: relative;
+        width: 100%;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-top: 10px;
+      }
+
+      .video-embed {
+        width: 100%;
+        aspect-ratio: 16/9;
+        border: none;
+      }
+
+      .video-controls,
+      .track-controls {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        gap: 8px;
+        z-index: 10;
+      }
+
+      .expand-button,
+      .show-more-button {
+        background-color: rgba(0, 0, 0, 0.6);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .expand-button:hover,
+      .show-more-button:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+
+      /* Override for YouTube iframe during fullscreen */
+      .video-embed:fullscreen {
+        width: 100vw;
+        height: 100vh;
+      }
+
+      /* Mobile Responsive Styles */
+      @media (max-width: 768px) {
+        .chat-container {
+          height: 100vh;
+          border-radius: 0;
+          margin: 0;
+        }
+
+        .chat-header {
+          border-radius: 0;
+        }
+
+        #chat-messages {
+          height: calc(100vh - 130px);
+        }
+      }
+
+      /* Animation for messages */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .message {
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      /* Thêm vào phần style */
+      .mjx-chtml {
+        margin: 0.5rem 0;
+      }
+
+      .user-message .mjx-chtml,
+      .ai-message .mjx-chtml {
+        display: inline-block;
+      }
+
+      /* CSS cho công thức toán học */
+      .mjx-math {
+        font-size: 110%;
+      }
+    </style>
+  </head>
+  <body class="h-screen flex items-center justify-center p-0 sm:p-4">
+    <div
+      class="chat-container w-full max-w-md h-full sm:h-[600px] flex flex-col"
+    >
+      <!-- Chat Header -->
+      <div class="chat-header p-3 flex items-center">
+        <img
+          src="https://i.imgur.com/00PDxHB.png"
+          alt="Linh Đan"
+          class="avatar mr-3"
+          onerror="this.src='https://i.imgur.com/00PDxHB.png'"
+        />
+        <div>
+          <h2 class="text-white font-semibold">Linh Đan</h2>
+          <div class="text-white text-xs opacity-80">Đang hoạt động</div>
+        </div>
+      </div>
+
+      <!-- Chat Messages -->
+      <div
+        id="chat-messages"
+        class="flex-1 overflow-y-auto p-4 flex flex-col space-y-3"
+      ></div>
+
+      <!-- Typing Indicator -->
+      <div class="typing-indicator px-4 py-1 text-center hidden">
+        Linh Đan đang nhập...
+      </div>
+
+      <!-- Chat Input -->
+      <div class="chat-input-container p-3 flex items-center">
+        <textarea
+          id="message-input"
+          placeholder="Nhắn tin với Linh Đan..."
+          rows="1"
+          class="flex-grow p-3 mr-2"
+        ></textarea>
+        <button id="send-btn">
+          <i class="ri-send-plane-fill"></i>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const messageInput = document.getElementById("message-input");
+        const sendBtn = document.getElementById("send-btn");
+        const chatMessages = document.getElementById("chat-messages");
+        const typingIndicator = document.querySelector(".typing-indicator");
+
+        let messageCounter = 0;
+
+        function getCurrentTime() {
+          const now = new Date();
+          return now.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+        }
+
+        function formatDuration(seconds) {
+          const minutes = Math.floor(seconds / 60);
+          const remainingSeconds = seconds % 60;
+          return `${minutes}:${
+            remainingSeconds < 10 ? "0" : ""
+          }${remainingSeconds}`;
+        }
+
+        function typeEffect(element, text, index = 0) {
+          if (index === 0) {
+            text = text.replace(/\n/g, "<br>");
+            text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+            // Xử lý mã LaTeX inline với $...$
+            text = text.replace(/\$(.*?)\$/g, "\\($1\\)");
+
+            // Xử lý mã LaTeX block với $$...$$
+            text = text.replace(/\$\$(.*?)\$\$/g, "\\[$1\\]");
+
+            element.dataset.fullText = text;
+            element.innerHTML = "";
+          }
+
+          const fullText = element.dataset.fullText;
+
+          if (index < fullText.length) {
+            element.innerHTML = fullText.substring(0, index + 1);
+            setTimeout(() => typeEffect(element, text, index + 1), 20);
+          } else {
+            element.innerHTML = fullText;
+            // Render MathJax sau khi đã hoàn thành hiệu ứng typing
+            if (window.MathJax) {
+              MathJax.typesetPromise([element]);
+            }
+          }
+        }
+
+        function sanitizeHTML(text) {
+          const tempDiv = document.createElement("div");
+          tempDiv.textContent = text;
+          return tempDiv.innerHTML;
+        }
+
+        function vibrateOnSend() {
+          if ("vibrate" in navigator) {
+            navigator.vibrate(50);
+          }
+        }
+
+        function appendMessage(
+          text,
+          sender,
+          youtubeVideos = null,
+          soundcloudTracks = null
+        ) {
+          const messageDiv = document.createElement("div");
+          messageDiv.classList.add(
+            "message",
+            `${sender}-message`,
+            "p-3",
+            "my-1",
+            "break-words"
+          );
+
+          if (sender === "ai" && text) {
+            text = text.replace(/\n/g, "<br>");
+            text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+            // Xử lý mã LaTeX
+            text = text.replace(/\$(.*?)\$/g, "\\($1\\)");
+            text = text.replace(/\$\$(.*?)\$\$/g, "\\[$1\\]");
+          }
+
+          const messageContent = document.createElement("div");
+          messageContent.innerHTML = text;
+          messageDiv.appendChild(messageContent);
+
+          // Add YouTube videos if available
+          if (youtubeVideos && youtubeVideos.length > 0 && sender === "ai") {
+            const videoContainer = document.createElement("div");
+            videoContainer.classList.add("video-container");
+
+            youtubeVideos.forEach((video) => {
+              const videoCard = document.createElement("div");
+              videoCard.classList.add("video-card");
+              videoCard.dataset.videoId = video.videoId;
+
+              videoCard.innerHTML = `
+                <img src="${video.thumbnail}" alt="${video.title}" class="video-thumbnail">
+                <div class="video-info">
+                  <div class="video-title">${video.title}</div>
+                  <div class="video-channel">${video.channelTitle}</div>
+                </div>
+              `;
+
+              videoCard.addEventListener("click", function () {
+                const videoId = this.dataset.videoId;
+
+                // Remove other video embeds if they exist
+                const existingEmbeds = videoContainer.querySelectorAll(
+                  ".video-embed-container"
+                );
+                existingEmbeds.forEach((embed) => embed.remove());
+
+                // Hide all video cards
+                const allCards = videoContainer.querySelectorAll(".video-card");
+                allCards.forEach((card) => (card.style.display = "none"));
+
+                // Create container for video and controls
+                const embedContainer = document.createElement("div");
+                embedContainer.classList.add("video-embed-container");
+
+                // Create and append the iframe
+                const embedFrame = document.createElement("iframe");
+                embedFrame.classList.add("video-embed");
+                embedFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                embedFrame.setAttribute("frameborder", "0");
+                embedFrame.setAttribute("allowfullscreen", "true");
+                embedFrame.setAttribute(
+                  "allow",
+                  "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                );
+
+                // Create video controls
+                const videoControls = document.createElement("div");
+                videoControls.classList.add("video-controls");
+
+                // Create expand button
+                const expandButton = document.createElement("button");
+                expandButton.classList.add("expand-button");
+                expandButton.innerHTML = '<i class="ri-fullscreen-line"></i>';
+                expandButton.title = "Phóng to video";
+
+                // Add expand button functionality
+                expandButton.addEventListener("click", function () {
+                  if (embedFrame.requestFullscreen) {
+                    embedFrame.requestFullscreen();
+                  } else if (embedFrame.webkitRequestFullscreen) {
+                    /* Safari */
+                    embedFrame.webkitRequestFullscreen();
+                  } else if (embedFrame.msRequestFullscreen) {
+                    /* IE11 */
+                    embedFrame.msRequestFullscreen();
+                  }
+                });
+
+                // Add show more videos button
+                const showMoreButton = document.createElement("button");
+                showMoreButton.classList.add("show-more-button");
+                showMoreButton.innerHTML = '<i class="ri-menu-line"></i>';
+                showMoreButton.title = "Hiển thị các video khác";
+
+                // Add show more videos functionality
+                showMoreButton.addEventListener("click", function () {
+                  // Show all video cards again
+                  allCards.forEach((card) => (card.style.display = "flex"));
+                  embedContainer.remove();
+                });
+
+                // Append buttons to controls
+                videoControls.appendChild(expandButton);
+                videoControls.appendChild(showMoreButton);
+
+                // Append iframe and controls to container
+                embedContainer.appendChild(embedFrame);
+                embedContainer.appendChild(videoControls);
+
+                // Add container to video container
+                videoContainer.appendChild(embedContainer);
+
+                // Scroll to the video
+                embedContainer.scrollIntoView({ behavior: "smooth" });
+              });
+
+              videoContainer.appendChild(videoCard);
+            });
+
+            messageDiv.appendChild(videoContainer);
+          }
+
+          // Add SoundCloud tracks if available
+          if (
+            soundcloudTracks &&
+            soundcloudTracks.length > 0 &&
+            sender === "ai"
+          ) {
+            const soundcloudContainer = document.createElement("div");
+            soundcloudContainer.classList.add("soundcloud-container");
+
+            soundcloudTracks.forEach((track) => {
+              const trackCard = document.createElement("div");
+              trackCard.classList.add("track-card");
+              trackCard.dataset.trackUrl = track.permalink;
+
+              trackCard.innerHTML = `
+                <img src="${track.artwork}" alt="${
+                track.title
+              }" class="track-artwork">
+                <div class="track-info">
+                  <div class="track-title">${track.title}</div>
+                  <div class="track-artist">${track.artist}</div>
+                  <div class="track-duration">${formatDuration(
+                    track.duration
+                  )}</div>
+                </div>
+              `;
+
+              trackCard.addEventListener("click", function () {
+                const trackUrl = this.dataset.trackUrl;
+
+                // Remove other track embeds if they exist
+                const existingEmbeds = soundcloudContainer.querySelectorAll(
+                  ".track-embed-container"
+                );
+                existingEmbeds.forEach((embed) => embed.remove());
+
+                // Hide all track cards
+                const allCards =
+                  soundcloudContainer.querySelectorAll(".track-card");
+                allCards.forEach((card) => (card.style.display = "none"));
+
+                // Create container for track player
+                const embedContainer = document.createElement("div");
+                embedContainer.classList.add("track-embed-container");
+
+                // Create and append the iframe
+                const embedFrame = document.createElement("iframe");
+                embedFrame.classList.add("track-player");
+                embedFrame.src = `https://w.soundcloud.com/player/?url=${trackUrl}&color=%23ff6b9d&auto_play=true`;
+                embedFrame.setAttribute("frameborder", "0");
+                embedFrame.setAttribute("scrolling", "no");
+                embedFrame.setAttribute("allow", "autoplay");
+
+                // Create track controls
+                const trackControls = document.createElement("div");
+                trackControls.classList.add("track-controls");
+
+                // Add show more tracks button
+                const showMoreButton = document.createElement("button");
+                showMoreButton.classList.add("show-more-button");
+                showMoreButton.innerHTML = '<i class="ri-menu-line"></i>';
+                showMoreButton.title = "Hiển thị các bài hát khác";
+
+                // Add show more tracks functionality
+                showMoreButton.addEventListener("click", function () {
+                  // Show all track cards again
+                  allCards.forEach((card) => (card.style.display = "flex"));
+                  embedContainer.remove();
+                });
+
+                // Append button to controls
+                trackControls.appendChild(showMoreButton);
+
+                // Append iframe and controls to container
+                embedContainer.appendChild(embedFrame);
+                embedContainer.appendChild(trackControls);
+
+                // Add container to soundcloud container
+                soundcloudContainer.appendChild(embedContainer);
+
+                // Scroll to the track
+                embedContainer.scrollIntoView({ behavior: "smooth" });
+              });
+
+              soundcloudContainer.appendChild(trackCard);
+            });
+
+            messageDiv.appendChild(soundcloudContainer);
+          }
+
+          // Add timestamp
+          const timeSpan = document.createElement("div");
+          timeSpan.classList.add("message-time");
+          timeSpan.textContent = getCurrentTime();
+          messageDiv.appendChild(timeSpan);
+
+          chatMessages.appendChild(messageDiv);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+
+          // Render MathJax cho tin nhắn vừa thêm
+          if (
+            (window.MathJax && text.includes("\\(")) ||
+            text.includes("\\[")
+          ) {
+            MathJax.typesetPromise([messageDiv]);
+          }
+
+          return messageDiv;
+        }
+
+        function sendMessage() {
+          const message = messageInput.value.trim();
+          if (!message) return;
+
+          appendMessage(message, "user");
+          messageInput.value = "";
+          messageInput.style.height = "auto";
+          typingIndicator.classList.remove("hidden");
+          messageCounter++;
+          vibrateOnSend();
+
+          // Simulate server response
+          setTimeout(() => {
+            typingIndicator.classList.add("hidden");
+            const aiMessageDiv = appendMessage("", "ai");
+
+            // Replace with your actual API call
+            fetch("/chat", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ message }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                typeEffect(aiMessageDiv.firstChild, sanitizeHTML(data.reply));
+
+                // If we have YouTube videos or SoundCloud tracks
+                if (
+                  (data.youtubeVideos && data.youtubeVideos.length > 0) ||
+                  (data.soundcloudTracks && data.soundcloudTracks.length > 0)
+                ) {
+                  // Remove the first child (empty content) before typing effect
+                  while (aiMessageDiv.firstChild) {
+                    aiMessageDiv.removeChild(aiMessageDiv.firstChild);
+                  }
+
+                  // Create new content element and append it
+                  const newContent = document.createElement("div");
+                  aiMessageDiv.appendChild(newContent);
+
+                  // Apply typing effect
+                  typeEffect(newContent, sanitizeHTML(data.reply));
+
+                  // Wait for typing effect to complete before adding media
+                  setTimeout(() => {
+                    // Add YouTube videos if available
+                    if (data.youtubeVideos && data.youtubeVideos.length > 0) {
+                      const videoContainer = document.createElement("div");
+                      videoContainer.classList.add("video-container");
+
+                      data.youtubeVideos.forEach((video) => {
+                        const videoCard = document.createElement("div");
+                        videoCard.classList.add("video-card");
+                        videoCard.dataset.videoId = video.videoId;
+
+                        videoCard.innerHTML = `
+                          <img src="${video.thumbnail}" alt="${video.title}" class="video-thumbnail">
+                          <div class="video-info">
+                            <div class="video-title">${video.title}</div>
+                            <div class="video-channel">${video.channelTitle}</div>
+                          </div>
+                        `;
+
+                        videoCard.addEventListener("click", function () {
+                          const videoId = this.dataset.videoId;
+
+                          // Remove other video embeds if they exist
+                          const existingEmbeds =
+                            videoContainer.querySelectorAll(
+                              ".video-embed-container"
+                            );
+                          existingEmbeds.forEach((embed) => embed.remove());
+
+                          // Hide all video cards
+                          const allCards =
+                            videoContainer.querySelectorAll(".video-card");
+                          allCards.forEach(
+                            (card) => (card.style.display = "none")
+                          );
+
+                          // Create container for video and controls
+                          const embedContainer = document.createElement("div");
+                          embedContainer.classList.add("video-embed-container");
+
+                          // Create and append the iframe
+                          const embedFrame = document.createElement("iframe");
+                          embedFrame.classList.add("video-embed");
+                          embedFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                          embedFrame.setAttribute("frameborder", "0");
+                          embedFrame.setAttribute("allowfullscreen", "true");
+                          embedFrame.setAttribute(
+                            "allow",
+                            "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          );
+
+                          // Create video controls
+                          const videoControls = document.createElement("div");
+                          videoControls.classList.add("video-controls");
+
+                          // Create expand button
+                          const expandButton = document.createElement("button");
+                          expandButton.classList.add("expand-button");
+                          expandButton.innerHTML =
+                            '<i class="ri-fullscreen-line"></i>';
+                          expandButton.title = "Phóng to video";
+
+                          // Add expand button functionality
+                          expandButton.addEventListener("click", function () {
+                            if (embedFrame.requestFullscreen) {
+                              embedFrame.requestFullscreen();
+                            } else if (embedFrame.webkitRequestFullscreen) {
+                              /* Safari */
+                              embedFrame.webkitRequestFullscreen();
+                            } else if (embedFrame.msRequestFullscreen) {
+                              /* IE11 */
+                              embedFrame.msRequestFullscreen();
+                            }
+                          });
+
+                          // Add show more videos button
+                          const showMoreButton =
+                            document.createElement("button");
+                          showMoreButton.classList.add("show-more-button");
+                          showMoreButton.innerHTML =
+                            '<i class="ri-menu-line"></i>';
+                          showMoreButton.title = "Hiển thị các video khác";
+
+                          // Add show more videos functionality
+                          showMoreButton.addEventListener("click", function () {
+                            // Show all video cards again
+                            allCards.forEach(
+                              (card) => (card.style.display = "flex")
+                            );
+                            embedContainer.remove();
+                          });
+
+                          // Append buttons to controls
+                          videoControls.appendChild(expandButton);
+                          videoControls.appendChild(showMoreButton);
+
+                          // Append iframe and controls to container
+                          embedContainer.appendChild(embedFrame);
+                          embedContainer.appendChild(videoControls);
+
+                          // Add container to video container
+                          videoContainer.appendChild(embedContainer);
+
+                          // Scroll to the video
+                          embedContainer.scrollIntoView({ behavior: "smooth" });
+                        });
+
+                        videoContainer.appendChild(videoCard);
+                      });
+
+                      aiMessageDiv.appendChild(videoContainer);
+                    }
+
+                    // Add SoundCloud tracks if available
+                    if (
+                      data.soundcloudTracks &&
+                      data.soundcloudTracks.length > 0
+                    ) {
+                      const soundcloudContainer = document.createElement("div");
+                      soundcloudContainer.classList.add("soundcloud-container");
+
+                      data.soundcloudTracks.forEach((track) => {
+                        const trackCard = document.createElement("div");
+                        trackCard.classList.add("track-card");
+                        trackCard.dataset.trackUrl = track.permalink;
+
+                        trackCard.innerHTML = `
+                          <img src="${track.artwork}" alt="${
+                          track.title
+                        }" class="track-artwork">
+                          <div class="track-info">
+                            <div class="track-title">${track.title}</div>
+                            <div class="track-artist">${track.artist}</div>
+                            <div class="track-duration">${formatDuration(
+                              track.duration
+                            )}</div>
+                          </div>
+                        `;
+
+                        trackCard.addEventListener("click", function () {
+                          const trackUrl = this.dataset.trackUrl;
+
+                          // Remove other track embeds if they exist
+                          const existingEmbeds =
+                            soundcloudContainer.querySelectorAll(
+                              ".track-embed-container"
+                            );
+                          existingEmbeds.forEach((embed) => embed.remove());
+
+                          // Hide all track cards
+                          const allCards =
+                            soundcloudContainer.querySelectorAll(".track-card");
+                          allCards.forEach(
+                            (card) => (card.style.display = "none")
+                          );
+
+                          // Create container for track player
+                          const embedContainer = document.createElement("div");
+                          embedContainer.classList.add("track-embed-container");
+
+                          // Create and append the iframe
+                          const embedFrame = document.createElement("iframe");
+                          embedFrame.classList.add("track-player");
+                          embedFrame.src = `https://w.soundcloud.com/player/?url=${trackUrl}&color=%23ff6b9d&auto_play=true`;
+                          embedFrame.setAttribute("frameborder", "0");
+                          embedFrame.setAttribute("scrolling", "no");
+                          embedFrame.setAttribute("allow", "autoplay");
+
+                          // Create track controls
+                          const trackControls = document.createElement("div");
+                          trackControls.classList.add("track-controls");
+
+                          // Add show more tracks button
+                          const showMoreButton =
+                            document.createElement("button");
+                          showMoreButton.classList.add("show-more-button");
+                          showMoreButton.innerHTML =
+                            '<i class="ri-menu-line"></i>';
+                          showMoreButton.title = "Hiển thị các bài hát khác";
+
+                          // Add show more tracks functionality
+                          showMoreButton.addEventListener("click", function () {
+                            // Show all track cards again
+                            allCards.forEach(
+                              (card) => (card.style.display = "flex")
+                            );
+                            embedContainer.remove();
+                          });
+
+                          // Append button to controls
+                          trackControls.appendChild(showMoreButton);
+
+                          // Append iframe and controls to container
+                          embedContainer.appendChild(embedFrame);
+                          embedContainer.appendChild(trackControls);
+
+                          // Add container to soundcloud container
+                          soundcloudContainer.appendChild(embedContainer);
+
+                          // Scroll to the track
+                          embedContainer.scrollIntoView({ behavior: "smooth" });
+                        });
+
+                        soundcloudContainer.appendChild(trackCard);
+                      });
+
+                      aiMessageDiv.appendChild(soundcloudContainer);
+                    }
+                  }, 500); // Wait for typing effect to complete
+                }
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+                typeEffect(
+                  aiMessageDiv.firstChild,
+                  "Có lỗi xảy ra. Xin thử lại."
+                );
+              });
+          }, 800);
+        }
+
+        // Tải lịch sử chat khi trang được tải
+        // Tải lịch sử chat khi trang được tải
+        function loadChatHistory() {
+          fetch("/chat-history")
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.history && data.history.length > 0) {
+                // Hiển thị lịch sử chat (giới hạn 20 tin nhắn gần nhất)
+                const recentHistory = data.history.slice(-20);
+                recentHistory.forEach((item) => {
+                  appendMessage(item.user, "user");
+                  appendMessage(
+                    item.ai,
+                    "ai",
+                    item.youtubeVideos,
+                    item.soundcloudTracks
+                  );
+                });
+
+                // Cuộn xuống cuối cuộc trò chuyện
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+              } else {
+                // Nếu không có lịch sử, hiển thị tin nhắn chào
+                setTimeout(() => {
+                  const aiMessageDiv = appendMessage("", "ai");
+                  typeEffect(
+                    aiMessageDiv.firstChild,
+                    "Xin chào! Mình là Linh Đan. Bạn muốn trò chuyện về điều gì hôm nay? 😊"
+                  );
+                }, 500);
+              }
+            })
+            .catch((error) => {
+              console.error("Error loading chat history:", error);
+              // Hiển thị tin nhắn chào nếu có lỗi
+              setTimeout(() => {
+                const aiMessageDiv = appendMessage("", "ai");
+                typeEffect(
+                  aiMessageDiv.firstChild,
+                  "Xin chào! Mình là Linh Đan. Bạn muốn trò chuyện về điều gì hôm nay? 😊"
+                );
+              }, 500);
+            });
+        }
+
+        // Event Listeners
+        sendBtn.addEventListener("click", sendMessage);
+
+        messageInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+          }
+        });
+
+        // Auto-resize textarea
+        messageInput.addEventListener("input", function () {
+          this.style.height = "auto";
+          this.style.height = Math.min(this.scrollHeight, 100) + "px";
+        });
+
+        // Tải lịch sử chat khi trang được tải
+        loadChatHistory();
+      });
+    </script>
+  </body>
+</html>

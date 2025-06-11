@@ -1,0 +1,1152 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kz Text Extractor - Trích xuất Văn bản chuyên nghiệp</title>
+    <style>
+      /* public/styles.css */
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+      :root {
+        --primary-color: #6c5ce7;
+        --primary-light: #a29bfe;
+        --secondary-color: #00cec9;
+        --accent-color: #fdcb6e;
+        --dark-color: #2d3436;
+        --light-color: #f9f9f9;
+        --success-color: #00b894;
+        --danger-color: #d63031;
+        --gradient-1: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+        --gradient-2: linear-gradient(135deg, #00cec9 0%, #81ecec 100%);
+        --shadow-1: 0 10px 25px rgba(108, 92, 231, 0.2);
+        --shadow-2: 0 8px 20px rgba(0, 0, 0, 0.1);
+        --animation-speed: 0.3s;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background-color: #f1f2f6;
+        color: var(--dark-color);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 20px;
+      }
+
+      /* Header Styling */
+      .header {
+        text-align: center;
+        margin-bottom: 40px;
+        position: relative;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: var(--primary-color);
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        letter-spacing: 1px;
+        position: relative;
+        display: inline-block;
+      }
+
+      .header h1::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        width: 80px;
+        height: 4px;
+        background: var(--gradient-1);
+        transform: translateX(-50%);
+        border-radius: 2px;
+      }
+
+      .header p {
+        color: #636e72;
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 20px auto 0;
+        font-weight: 300;
+      }
+
+      /* Upload Container */
+      .upload-container {
+        background-color: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: var(--shadow-2);
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+        transition: transform var(--animation-speed),
+          box-shadow var(--animation-speed);
+      }
+
+      .upload-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .upload-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: var(--gradient-1);
+      }
+
+      .upload-area {
+        border: 2px dashed var(--primary-light);
+        border-radius: 12px;
+        padding: 50px 25px;
+        text-align: center;
+        margin-bottom: 25px;
+        transition: all var(--animation-speed) ease;
+        background-color: rgba(162, 155, 254, 0.05);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .upload-area.highlight {
+        border-color: var(--secondary-color);
+        background-color: rgba(0, 206, 201, 0.08);
+        transform: scale(1.02);
+      }
+
+      .upload-icon {
+        font-size: 50px;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+        display: block;
+        animation: float 3s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .upload-area p {
+        margin-bottom: 15px;
+        color: #636e72;
+        font-size: 1.1rem;
+      }
+
+      .upload-btn {
+        display: inline-block;
+        background: var(--gradient-1);
+        color: white;
+        padding: 12px 30px;
+        border-radius: 50px;
+        cursor: pointer;
+        margin: 15px 0;
+        font-weight: 500;
+        font-size: 1rem;
+        transition: all var(--animation-speed);
+        box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+      }
+
+      .upload-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 100%;
+        background: var(--gradient-2);
+        transition: all 0.5s ease;
+        z-index: -1;
+        border-radius: 50px;
+      }
+
+      .upload-btn:hover::before {
+        width: 100%;
+      }
+
+      .upload-btn:hover {
+        box-shadow: 0 7px 15px rgba(0, 206, 201, 0.4);
+        transform: translateY(-3px);
+      }
+
+      .file-types {
+        font-size: 0.85rem;
+        color: #b2bec3;
+        margin-top: 15px;
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .file-type {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 12px;
+        background-color: #f1f2f6;
+        border-radius: 20px;
+        font-weight: 500;
+      }
+
+      .file-type i {
+        margin-right: 5px;
+        color: var(--primary-color);
+      }
+
+      /* File Info */
+      .file-info {
+        padding: 20px;
+        border-radius: 12px;
+        background-color: #f7f7f7;
+        margin-bottom: 25px;
+        transition: all var(--animation-speed);
+        border-left: 4px solid var(--primary-color);
+      }
+
+      .file-info.active {
+        background-color: #f0f7ff;
+        transform: translateX(5px);
+      }
+
+      .file-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .file-meta-item {
+        display: flex;
+        align-items: center;
+      }
+
+      .file-meta-item i {
+        margin-right: 8px;
+        color: var(--primary-color);
+        font-size: 1.2rem;
+      }
+
+      .file-preview {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px dashed #e0e0e0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .file-icon {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+      }
+
+      .file-name {
+        font-weight: 500;
+        word-break: break-all;
+        flex: 1;
+        padding: 0 15px;
+      }
+
+      /* Buttons */
+      .btn {
+        display: block;
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: all var(--animation-speed);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        text-align: center;
+      }
+
+      .btn-primary {
+        background: var(--gradient-1);
+        color: white;
+        box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+      }
+
+      .btn-primary::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 100%;
+        background: var(--gradient-2);
+        transition: all 0.5s ease;
+        z-index: -1;
+        border-radius: 50px;
+      }
+
+      .btn-primary:hover::before {
+        width: 100%;
+      }
+
+      .btn-primary:hover {
+        box-shadow: 0 7px 20px rgba(0, 206, 201, 0.4);
+        transform: translateY(-3px);
+      }
+
+      .btn-secondary {
+        background: white;
+        color: var(--primary-color);
+        border: 2px solid var(--primary-light);
+        box-shadow: 0 4px 15px rgba(162, 155, 254, 0.15);
+      }
+
+      .btn-secondary:hover {
+        background-color: #f8f9fe;
+        transform: translateY(-3px);
+        box-shadow: 0 7px 15px rgba(162, 155, 254, 0.2);
+      }
+
+      .btn i {
+        margin-right: 8px;
+      }
+
+      .btn:disabled {
+        background: #dfe6e9;
+        color: #b2bec3;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+
+      .btn:disabled:hover {
+        transform: none;
+      }
+
+      /* Result Container */
+      .result-container {
+        background-color: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: var(--shadow-2);
+        position: relative;
+        overflow: hidden;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .result-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: var(--gradient-2);
+      }
+
+      .result-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #f1f2f6;
+      }
+
+      .result-header h2 {
+        color: var(--primary-color);
+        font-weight: 600;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+      }
+
+      .result-header h2 i {
+        margin-right: 10px;
+        font-size: 1.8rem;
+      }
+
+      .controls {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .controls .btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .text-result {
+        background-color: #f8f9fe;
+        border: 1px solid #eef0f7;
+        border-radius: 12px;
+        padding: 20px;
+        max-height: 500px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        line-height: 1.7;
+        font-size: 0.95rem;
+        position: relative;
+        box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .text-result::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .text-result::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+
+      .text-result::-webkit-scrollbar-thumb {
+        background: var(--primary-light);
+        border-radius: 10px;
+      }
+
+      .text-result::-webkit-scrollbar-thumb:hover {
+        background: var(--primary-color);
+      }
+
+      /* Loading Animation */
+      .loading {
+        text-align: center;
+        padding: 40px 20px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: var(--shadow-2);
+        animation: fadeIn 0.5s ease;
+      }
+
+      .spinner {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 20px;
+        position: relative;
+      }
+
+      .spinner:before,
+      .spinner:after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        animation: pulse 2s linear infinite;
+      }
+
+      .spinner:before {
+        width: 100%;
+        height: 100%;
+        background: rgba(108, 92, 231, 0.2);
+        animation-delay: 0.5s;
+      }
+
+      .spinner:after {
+        width: 75%;
+        height: 75%;
+        background: var(--primary-color);
+        top: 12.5%;
+        left: 12.5%;
+        animation-delay: 0s;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(0.6);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.2);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(0.6);
+          opacity: 1;
+        }
+      }
+
+      .loading p {
+        color: var(--primary-color);
+        font-weight: 500;
+        font-size: 1.1rem;
+        margin-top: 15px;
+      }
+
+      .loading .loading-text {
+        display: inline-block;
+        position: relative;
+      }
+
+      .loading .loading-text::after {
+        content: "";
+        position: absolute;
+        right: -20px;
+        width: 15px;
+        height: 15px;
+        animation: loadingDots 1.5s infinite;
+      }
+
+      @keyframes loadingDots {
+        0% {
+          content: "";
+        }
+        25% {
+          content: ".";
+        }
+        50% {
+          content: "..";
+        }
+        75% {
+          content: "...";
+        }
+        100% {
+          content: "";
+        }
+      }
+
+      /* Messages */
+      .message {
+        padding: 15px;
+        border-radius: 8px;
+        margin: 15px 0;
+        display: flex;
+        align-items: center;
+        animation: slideIn 0.3s ease;
+      }
+
+      .success-message {
+        background-color: rgba(0, 184, 148, 0.1);
+        color: var(--success-color);
+        border: 1px solid rgba(0, 184, 148, 0.3);
+      }
+
+      .error-message {
+        background-color: rgba(214, 48, 49, 0.1);
+        color: var(--danger-color);
+        border: 1px solid rgba(214, 48, 49, 0.3);
+      }
+
+      .message i {
+        margin-right: 10px;
+        font-size: 1.2rem;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        10%,
+        30%,
+        50%,
+        70%,
+        90% {
+          transform: translateX(-5px);
+        }
+        20%,
+        40%,
+        60%,
+        80% {
+          transform: translateX(5px);
+        }
+      }
+
+      .shake {
+        animation: shake 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+      }
+
+      /* Tooltip */
+      .tooltip {
+        position: relative;
+        display: inline-block;
+      }
+
+      .tooltip:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .tooltip-text {
+        visibility: hidden;
+        width: 120px;
+        background-color: var(--dark-color);
+        color: white;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -60px;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.3s ease;
+        font-size: 0.75rem;
+      }
+
+      .tooltip-text::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: var(--dark-color) transparent transparent transparent;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .container {
+          padding: 15px;
+          margin: 20px auto;
+        }
+
+        .header h1 {
+          font-size: 2rem;
+        }
+
+        .upload-area {
+          padding: 30px 15px;
+        }
+
+        .controls {
+          flex-direction: column;
+        }
+
+        .file-meta {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+      }
+
+      /* Progress Bar */
+      .progress-container {
+        width: 100%;
+        height: 8px;
+        background-color: #f1f2f6;
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 25px 0 15px;
+        position: relative;
+      }
+
+      .progress-bar {
+        height: 100%;
+        width: 0%;
+        background: var(--gradient-1);
+        border-radius: 10px;
+        transition: width 0.5s ease;
+        position: relative;
+      }
+
+      .progress-bar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.4) 50%,
+          transparent 100%
+        );
+        animation: shine 1.5s infinite linear;
+      }
+
+      @keyframes shine {
+        from {
+          transform: translateX(-100%);
+        }
+        to {
+          transform: translateX(100%);
+        }
+      }
+
+      /* Confetti Animation */
+      .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background-color: var(--primary-color);
+        z-index: 9999;
+        animation: confetti 3s ease-in-out forwards;
+        pointer-events: none;
+      }
+
+      @keyframes confetti {
+        0% {
+          transform: translateY(0) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(1000px) rotate(720deg);
+          opacity: 0;
+        }
+      }
+
+      /* Glass morphism effect */
+      .glass-effect {
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      }
+
+      /* File Card */
+      .file-card {
+        position: relative;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #eef0f7;
+        background: white;
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      .file-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 5px;
+        height: 100%;
+        background: var(--gradient-1);
+      }
+
+      .file-card:hover {
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      }
+
+      .file-card-icon {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        background: var(--primary-color);
+        border-radius: 10px;
+        margin-right: 15px;
+      }
+
+      .file-card-content {
+        flex: 1;
+      }
+
+      .file-card-action {
+        margin-left: 15px;
+      }
+
+      /* Theme Toggle */
+      .theme-toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        background: var(--gradient-1);
+        border-radius: 50%;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+        z-index: 1000;
+        transition: all 0.3s ease;
+      }
+
+      .theme-toggle:hover {
+        transform: rotate(45deg);
+      }
+
+      /* KZ Khánh Signature Styles */
+      .kz-brand {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .kz-brand::before {
+        content: "⚡";
+        margin-right: 5px;
+        font-size: 1.2rem;
+      }
+
+      .kz-signature {
+        font-style: italic;
+        color: var(--primary-color);
+        font-weight: 600;
+        letter-spacing: 1px;
+      }
+
+      .kz-effect {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .kz-effect::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 30%;
+        background: linear-gradient(
+          to top,
+          rgba(108, 92, 231, 0.1),
+          transparent
+        );
+        z-index: -1;
+      }
+
+      /* Bubble animation */
+      .bubble {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(108, 92, 231, 0.2);
+        animation: bubble 4s linear infinite;
+        z-index: -1;
+      }
+
+      @keyframes bubble {
+        0% {
+          transform: translateY(0) scale(0);
+          opacity: 0;
+        }
+        50% {
+          opacity: 0.8;
+        }
+        100% {
+          transform: translateY(-100vh) scale(1);
+          opacity: 0;
+        }
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1 class="kz-effect">KZ Text Extractor</h1>
+        <p>
+          Trích xuất văn bản từ tệp PDF & Word một cách nhanh chóng và chuyên
+          nghiệp
+        </p>
+      </div>
+
+      <div class="upload-container">
+        <div class="upload-area" id="drop-area">
+          <i class="fas fa-cloud-upload-alt upload-icon"></i>
+          <p>Kéo & thả tệp vào đây hoặc</p>
+          <label for="file-input" class="upload-btn">
+            <i class="fas fa-file-upload"></i> Chọn tệp
+          </label>
+          <input type="file" id="file-input" accept=".pdf,.doc,.docx" hidden />
+          <div class="file-types">
+            <span class="file-type"><i class="fas fa-file-pdf"></i> PDF</span>
+            <span class="file-type"><i class="fas fa-file-word"></i> DOCX</span>
+            <span class="file-type"><i class="fas fa-file-word"></i> DOC</span>
+          </div>
+        </div>
+
+        <div class="file-info" id="file-info">
+          <p>Chưa có tệp nào được chọn</p>
+        </div>
+
+        <div
+          class="progress-container"
+          id="progress-container"
+          style="display: none"
+        >
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <button id="extract-btn" class="btn btn-primary" disabled>
+          <i class="fas fa-magic"></i> Trích xuất văn bản
+        </button>
+      </div>
+
+      <div class="result-container" id="result-container" style="display: none">
+        <div class="result-header">
+          <h2><i class="fas fa-file-alt"></i> Văn bản đã trích xuất</h2>
+          <span class="kz-signature">KZ Khánh</span>
+        </div>
+
+        <div class="controls">
+          <button id="copy-btn" class="btn btn-primary">
+            <i class="fas fa-copy"></i> Sao chép văn bản
+          </button>
+          <button id="download-btn" class="btn btn-secondary">
+            <i class="fas fa-download"></i> Tải xuống văn bản
+          </button>
+        </div>
+
+        <div class="text-result" id="text-result"></div>
+      </div>
+
+      <div class="loading" id="loading" style="display: none">
+        <div class="spinner"></div>
+        <p><span class="loading-text">Đang trích xuất văn bản</span></p>
+      </div>
+    </div>
+
+    <div class="kz-brand">Powered by KZ Khánh</div>
+    <div class="theme-toggle" id="theme-toggle">
+      <i class="fas fa-lightbulb"></i>
+    </div>
+
+    <script>
+      // public/script.js
+      document.addEventListener("DOMContentLoaded", () => {
+        // Các phần tử DOM
+        const dropArea = document.getElementById("drop-area");
+        const fileInput = document.getElementById("file-input");
+        const fileInfo = document.getElementById("file-info");
+        const extractBtn = document.getElementById("extract-btn");
+        const resultContainer = document.getElementById("result-container");
+        const textResult = document.getElementById("text-result");
+        const copyBtn = document.getElementById("copy-btn");
+        const downloadBtn = document.getElementById("download-btn");
+        const loading = document.getElementById("loading");
+
+        let selectedFile = null;
+
+        // Ngăn chặn sự kiện mặc định khi kéo thả
+        ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+          dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+
+        // Hiệu ứng highlight khi kéo file vào
+        ["dragenter", "dragover"].forEach((eventName) => {
+          dropArea.addEventListener(eventName, highlight, false);
+        });
+
+        ["dragleave", "drop"].forEach((eventName) => {
+          dropArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+          dropArea.classList.add("highlight");
+        }
+
+        function unhighlight() {
+          dropArea.classList.remove("highlight");
+        }
+
+        // Xử lý khi thả file
+        dropArea.addEventListener("drop", handleDrop, false);
+
+        function handleDrop(e) {
+          const dt = e.dataTransfer;
+          const files = dt.files;
+
+          if (files.length > 0) {
+            handleFiles(files[0]);
+          }
+        }
+
+        // Xử lý khi chọn file qua input
+        fileInput.addEventListener("change", (e) => {
+          if (e.target.files.length > 0) {
+            handleFiles(e.target.files[0]);
+          }
+        });
+
+        // Xử lý file đã chọn
+        function handleFiles(file) {
+          const fileType = file.type;
+
+          // Kiểm tra loại file
+          if (
+            fileType === "application/pdf" ||
+            fileType ===
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+            fileType === "application/msword"
+          ) {
+            selectedFile = file;
+
+            // Hiển thị thông tin file
+            fileInfo.innerHTML = `
+        <p><strong>Tên tệp:</strong> ${file.name}</p>
+        <p><strong>Loại tệp:</strong> ${fileType}</p>
+        <p><strong>Kích thước:</strong> ${formatFileSize(file.size)}</p>
+      `;
+
+            // Kích hoạt nút trích xuất
+            extractBtn.disabled = false;
+          } else {
+            fileInfo.innerHTML = `<p class="error-message">Loại tệp không được hỗ trợ. Vui lòng chọn PDF hoặc Word.</p>`;
+            extractBtn.disabled = true;
+            selectedFile = null;
+          }
+        }
+
+        // Định dạng kích thước file
+        function formatFileSize(bytes) {
+          if (bytes === 0) return "0 Bytes";
+
+          const k = 1024;
+          const sizes = ["Bytes", "KB", "MB", "GB"];
+          const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+          return (
+            parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
+          );
+        }
+
+        // Xử lý sự kiện trích xuất văn bản
+        extractBtn.addEventListener("click", extractText);
+
+        async function extractText() {
+          if (!selectedFile) {
+            return;
+          }
+
+          // Hiển thị trạng thái loading
+          loading.style.display = "block";
+          resultContainer.style.display = "none";
+
+          // Tạo FormData để gửi file lên server
+          const formData = new FormData();
+          formData.append("file", selectedFile);
+
+          try {
+            // Gửi request tới server
+            const response = await fetch("/extract-text", {
+              method: "POST",
+              body: formData,
+            });
+
+            if (!response.ok) {
+              throw new Error("Lỗi khi trích xuất văn bản");
+            }
+
+            const data = await response.json();
+
+            // Ẩn loading và hiển thị kết quả
+            loading.style.display = "none";
+            resultContainer.style.display = "block";
+
+            // Hiển thị văn bản trích xuất
+            textResult.textContent =
+              data.text || "Không có văn bản nào được trích xuất.";
+          } catch (error) {
+            loading.style.display = "none";
+            alert("Đã xảy ra lỗi: " + error.message);
+          }
+        }
+
+        // Chức năng sao chép văn bản
+        copyBtn.addEventListener("click", () => {
+          const text = textResult.textContent;
+
+          if (text) {
+            navigator.clipboard
+              .writeText(text)
+              .then(() => {
+                alert("Đã sao chép văn bản vào clipboard!");
+              })
+              .catch((err) => {
+                console.error("Lỗi khi sao chép: ", err);
+              });
+          }
+        });
+
+        // Chức năng tải xuống văn bản
+        downloadBtn.addEventListener("click", () => {
+          const text = textResult.textContent;
+
+          if (text) {
+            const blob = new Blob([text], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+
+            a.href = url;
+            a.download = "extracted-text.txt";
+            document.body.appendChild(a);
+            a.click();
+
+            // Dọn dẹp
+            setTimeout(() => {
+              document.body.removeChild(a);
+              URL.revokeObjectURL(url);
+            }, 0);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

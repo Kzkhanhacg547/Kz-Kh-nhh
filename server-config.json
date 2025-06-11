@@ -1,0 +1,18 @@
+{
+  "servers": {
+    "notes-app": {
+      "name": "Notes Application",
+      "folder": "notes-app",
+      "mainFile": "server.js",
+      "port": 3000,
+      "description": "Ứng dụng ghi chú với media",
+      "routes": [
+        "/",
+        "/view",
+        "/edit",
+        "/admin",
+        "/api"
+      ]
+    }
+  }
+}

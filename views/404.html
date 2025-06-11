@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 - Không Tìm Thấy</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .container {
+        text-align: center;
+        background: white;
+        padding: 60px 40px;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        width: 100%;
+      }
+
+      .error-code {
+        font-size: 8rem;
+        font-weight: bold;
+        color: #4facfe;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .error-title {
+        font-size: 2rem;
+        color: #333;
+        margin-bottom: 15px;
+      }
+
+      .error-message {
+        font-size: 1.1rem;
+        color: #666;
+        margin-bottom: 30px;
+        line-height: 1.6;
+      }
+
+      .btn {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 25px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        margin: 10px;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+      }
+
+      .btn-secondary {
+        background: linear-gradient(135deg, #a8a8a8 0%, #8c8c8c 100%);
+      }
+
+      .btn-secondary:hover {
+        box-shadow: 0 5px 15px rgba(168, 168, 168, 0.4);
+      }
+
+      @media (max-width: 768px) {
+        .error-code {
+          font-size: 6rem;
+        }
+
+        .error-title {
+          font-size: 1.5rem;
+        }
+
+        .container {
+          padding: 40px 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="error-code">404</div>
+      <div class="error-title">Không Tìm Thấy Trang</div>
+      <div class="error-message">
+        Xin lỗi, trang bạn tìm kiếm không tồn tại hoặc server chưa được khởi
+        tạo.
+      </div>
+      <a href="/" class="btn">🏠 Về Trang Chủ</a>
+      <button onclick="history.back()" class="btn btn-secondary">
+        ← Quay Lại
+      </button>
+    </div>
+  </body>
+</html>

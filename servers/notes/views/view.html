@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xem ghi chú - Notes Creator</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary-color: #6a3093;
+        --secondary-color: #a044ff;
+        --accent-color: #e1bbff;
+        --text-color: #f8f8ff;
+        --dark-bg: #121212;
+        --card-bg: #1e1e2e;
+        --gradient: linear-gradient(135deg, #6a3093 0%, #a044ff 100%);
+        --box-shadow: 0 10px 20px rgba(106, 48, 147, 0.2);
+        --font-main: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: var(--font-main);
+        background-color: var(--dark-bg);
+        color: var(--text-color);
+        line-height: 1.6;
+        background-image: radial-gradient(
+            circle at 20% 35%,
+            rgba(106, 48, 147, 0.15) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 75% 65%,
+            rgba(160, 68, 255, 0.1) 0%,
+            transparent 50%
+          );
+        background-attachment: fixed;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        position: relative;
+      }
+
+      /* HEADER */
+      .header {
+        padding: 20px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+      }
+
+      .header::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: var(--gradient);
+        opacity: 0.5;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .logo img {
+        height: 42px;
+        width: auto;
+        filter: drop-shadow(0 0 8px rgba(160, 68, 255, 0.6));
+      }
+
+      .logo h1 {
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 2px 10px rgba(106, 48, 147, 0.3);
+      }
+
+      .nav ul {
+        display: flex;
+        list-style: none;
+        gap: 30px;
+      }
+
+      .nav a {
+        color: var(--text-color);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        position: relative;
+        padding: 5px 0;
+      }
+
+      .nav a::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--gradient);
+        transition: width 0.3s ease;
+      }
+
+      .nav a:hover {
+        color: var(--secondary-color);
+      }
+
+      .nav a:hover::after {
+        width: 100%;
+      }
+
+      /* MAIN CONTENT */
+      .main {
+        padding: 40px 0;
+        min-height: calc(100vh - 180px);
+      }
+
+      .note-viewer {
+        max-width: 900px;
+        margin: 0 auto;
+        background-color: var(--card-bg);
+        border-radius: 12px;
+        box-shadow: var(--box-shadow);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .note-viewer::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gradient);
+      }
+
+      .note-content-wrapper {
+        padding: 30px;
+      }
+
+      .note-header {
+        margin-bottom: 25px;
+        position: relative;
+      }
+
+      .note-header h2 {
+        font-size: 28px;
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 10px;
+        position: relative;
+        display: inline-block;
+      }
+
+      .note-header h2::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: var(--gradient);
+        border-radius: 2px;
+      }
+
+      .note-meta {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.7);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .note-meta span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .note-meta i {
+        font-size: 12px;
+        color: var(--accent-color);
+      }
+
+      .note-body {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+      }
+
+      .note-text {
+        line-height: 1.8;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 16px;
+      }
+
+      .note-media {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 15px;
+      }
+
+      .note-img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .note-img:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      }
+
+      .note-video,
+      .note-audio {
+        width: 100%;
+        border-radius: 8px;
+        background-color: rgba(0, 0, 0, 0.2);
+      }
+
+      .note-actions {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px 30px;
+        background-color: rgba(0, 0, 0, 0.2);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .btn {
+        padding: 10px 24px;
+        border-radius: 50px;
+        font-weight: 500;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: none;
+        outline: none;
+        text-decoration: none;
+      }
+
+      .btn-primary {
+        background: var(--gradient);
+        color: white;
+        box-shadow: 0 4px 10px rgba(106, 48, 147, 0.3);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(106, 48, 147, 0.4);
+      }
+
+      .btn-secondary {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--text-color);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+
+      .btn-secondary:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+      }
+
+      #shareBtn {
+        background: var(--gradient);
+        color: white;
+        box-shadow: 0 4px 10px rgba(106, 48, 147, 0.3);
+      }
+
+      #shareBtn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(106, 48, 147, 0.4);
+      }
+
+      /* MODAL */
+      .share-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .modal-content {
+        background-color: var(--card-bg);
+        border-radius: 12px;
+        padding: 30px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        position: relative;
+        animation: modal-appear 0.3s ease;
+      }
+
+      @keyframes modal-appear {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modal-content h3 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: var(--text-color);
+        text-align: center;
+        position: relative;
+        padding-bottom: 10px;
+      }
+
+      .modal-content h3::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: var(--gradient);
+        border-radius: 2px;
+      }
+
+      .link-box {
+        display: flex;
+        align-items: center;
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        padding: 2px;
+        margin-bottom: 25px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .link-box input {
+        flex: 1;
+        background: none;
+        border: none;
+        padding: 12px 15px;
+        color: var(--text-color);
+        font-size: 14px;
+        outline: none;
+      }
+
+      .copy-btn {
+        background: var(--gradient);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 10px 15px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .copy-btn:hover {
+        opacity: 0.9;
+      }
+
+      /* FOOTER */
+      .footer {
+        padding: 25px 0;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 14px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        position: relative;
+      }
+
+      .footer::before {
+        content: "";
+        position: absolute;
+        top: -1px;
+        left: 15%;
+        right: 15%;
+        height: 1px;
+        background: var(--gradient);
+        opacity: 0.3;
+      }
+
+      .footer p {
+        position: relative;
+      }
+
+      .footer p::after {
+        content: "✧";
+        position: absolute;
+        bottom: -18px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: var(--secondary-color);
+        font-size: 16px;
+        opacity: 0.6;
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 768px) {
+        .header {
+          flex-direction: column;
+          gap: 15px;
+          text-align: center;
+        }
+
+        .nav ul {
+          gap: 20px;
+        }
+
+        .note-content-wrapper {
+          padding: 20px;
+        }
+
+        .note-header h2 {
+          font-size: 24px;
+        }
+
+        .note-actions {
+          flex-direction: column;
+          gap: 15px;
+          align-items: stretch;
+        }
+
+        .note-media {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* ANIMATIONS & EFFECTS */
+      @keyframes pulse {
+        0% {
+          opacity: 0.6;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0.6;
+        }
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .note-viewer {
+        animation: fadeIn 0.6s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Added mysterious elements */
+      .mystic-particle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: var(--accent-color);
+        border-radius: 50%;
+        opacity: 0.6;
+        pointer-events: none;
+        animation: float 3s infinite ease-in-out;
+      }
+
+      .logo::before {
+        content: "★";
+        position: absolute;
+        top: -5px;
+        left: 40px;
+        color: var(--secondary-color);
+        font-size: 12px;
+        animation: pulse 2s infinite ease-in-out;
+      }
+
+      .logo::after {
+        content: "★";
+        position: absolute;
+        bottom: -5px;
+        left: 30px;
+        color: var(--secondary-color);
+        font-size: 8px;
+        animation: pulse 2s infinite ease-in-out;
+        animation-delay: 0.5s;
+      }
+
+      .note-header::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        right: 30px;
+        width: 40px;
+        height: 1px;
+        background: var(--gradient);
+        transform: rotate(45deg);
+        opacity: 0.4;
+      }
+
+      .mystic-branding {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        font-size: 12px;
+        font-style: italic;
+        opacity: 0.6;
+        color: var(--accent-color);
+      }
+
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--gradient);
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--secondary-color);
+      }
+
+      /* Loading animation */
+      .loading {
+        display: inline-block;
+        position: relative;
+        width: 80px;
+        height: 80px;
+        margin: 30px auto;
+      }
+
+      .loading div {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--secondary-color);
+        animation: loading 1.2s linear infinite;
+      }
+
+      .loading div:nth-child(1) {
+        top: 8px;
+        left: 8px;
+        animation-delay: 0s;
+      }
+
+      .loading div:nth-child(2) {
+        top: 8px;
+        left: 32px;
+        animation-delay: -0.4s;
+      }
+
+      .loading div:nth-child(3) {
+        top: 8px;
+        left: 56px;
+        animation-delay: -0.8s;
+      }
+
+      .loading div:nth-child(4) {
+        top: 32px;
+        left: 8px;
+        animation-delay: -0.4s;
+      }
+
+      .loading div:nth-child(5) {
+        top: 32px;
+        left: 32px;
+        animation-delay: -0.8s;
+      }
+
+      .loading div:nth-child(6) {
+        top: 32px;
+        left: 56px;
+        animation-delay: -1.2s;
+      }
+
+      .loading div:nth-child(7) {
+        top: 56px;
+        left: 8px;
+        animation-delay: -0.8s;
+      }
+
+      .loading div:nth-child(8) {
+        top: 56px;
+        left: 32px;
+        animation-delay: -1.2s;
+      }
+
+      .loading div:nth-child(9) {
+        top: 56px;
+        left: 56px;
+        animation-delay: -1.6s;
+      }
+
+      @keyframes loading {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <div class="logo">
+          <img src="https://i.imgur.com/SAj7oIM.png" alt="Notes Creator Logo" />
+          <h1>Notes Creator</h1>
+        </div>
+        <nav class="nav">
+          <ul>
+            <li><a href="/">Trang chủ</a></li>
+            <li><a href="/admin">Admin</a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <main class="main">
+        <section class="note-viewer">
+          <div class="note-content-wrapper">
+            <div class="note-header">
+              <h2 id="noteTitle">Đang tải...</h2>
+              <div class="note-meta">
+                <span id="noteDate"></span>
+              </div>
+            </div>
+
+            <div class="note-body">
+              <div class="note-text" id="noteContent"></div>
+
+              <div class="note-media" id="noteMedia"></div>
+            </div>
+          </div>
+
+          <div class="note-actions">
+            <a href="/" class="btn btn-secondary">Tạo ghi chú mới</a>
+            <button id="shareBtn" class="btn">
+              <i class="fas fa-share-alt"></i> Chia sẻ
+            </button>
+          </div>
+
+          <div class="share-modal" id="shareModal">
+            <div class="modal-content">
+              <h3>Chia sẻ ghi chú</h3>
+              <div class="link-box">
+                <input type="text" id="shareLink" readonly />
+                <button class="copy-btn" data-target="shareLink">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+              <button id="closeShareModalBtn" class="btn btn-secondary">
+                Đóng
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <p>&copy; 2025 Notes Creator - Bản quyền thuộc về Kz Khánhh</p>
+      </footer>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const noteId = window.location.pathname.split("/").pop();
+        const noteTitle = document.getElementById("noteTitle");
+        const noteDate = document.getElementById("noteDate");
+        const noteContent = document.getElementById("noteContent");
+        const noteMedia = document.getElementById("noteMedia");
+        const shareBtn = document.getElementById("shareBtn");
+        const shareModal = document.getElementById("shareModal");
+        const shareLink = document.getElementById("shareLink");
+        const closeShareModalBtn =
+          document.getElementById("closeShareModalBtn");
+
+        // Lấy dữ liệu ghi chú
+        fetch(`/api/notes/view/${noteId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              const note = data.note;
+
+              // Cập nhật tiêu đề
+              document.title = `${note.title} - Notes Creator`;
+              noteTitle.textContent = note.title;
+
+              // Định dạng ngày
+              const createdDate = new Date(note.createdAt);
+              noteDate.textContent = `Tạo ngày: ${createdDate.toLocaleDateString(
+                "vi-VN"
+              )}`;
+
+              // Nội dung
+              noteContent.innerHTML = note.content;
+
+              // Media
+              if (note.media && note.media.length > 0) {
+                note.media.forEach((media) => {
+                  if (media.type === "image") {
+                    const img = document.createElement("img");
+                    img.src = media.data; // Sử dụng base64 data
+                    img.alt = media.name || "Note image";
+                    img.className = "note-img";
+                    noteMedia.appendChild(img);
+                  } else if (media.type === "video") {
+                    const video = document.createElement("video");
+                    video.src = media.data; // Sử dụng base64 data
+                    video.controls = true;
+                    video.className = "note-video";
+                    noteMedia.appendChild(video);
+                  } else if (media.type === "audio") {
+                    const audio = document.createElement("audio");
+                    audio.src = media.data; // Sử dụng base64 data
+                    audio.controls = true;
+                    audio.className = "note-audio";
+                    noteMedia.appendChild(audio);
+                  }
+                });
+              }
+
+              // Thiết lập link chia sẻ
+              shareLink.value = window.location.href;
+            } else {
+              noteTitle.textContent = "Không tìm thấy ghi chú";
+              noteContent.textContent = "Ghi chú không tồn tại hoặc đã bị xóa.";
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching note:", error);
+            noteTitle.textContent = "Lỗi";
+            noteContent.textContent =
+              "Không thể tải ghi chú. Vui lòng thử lại sau.";
+          });
+
+        // Xử lý sự kiện chia sẻ
+        shareBtn.addEventListener("click", () => {
+          shareModal.style.display = "flex";
+        });
+
+        closeShareModalBtn.addEventListener("click", () => {
+          shareModal.style.display = "none";
+        });
+
+        // Xử lý nút sao chép
+        document.querySelectorAll(".copy-btn").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const targetId = this.getAttribute("data-target");
+            const inputElement = document.getElementById(targetId);
+            inputElement.select();
+            document.execCommand("copy");
+
+            // Hiển thị thông báo đã sao chép
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-check"></i>';
+            setTimeout(() => {
+              this.innerHTML = originalText;
+            }, 1500);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

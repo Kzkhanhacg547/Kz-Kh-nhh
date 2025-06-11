@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Z STORE - Software Sharing Platform</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="loading-screen" id="loadingScreen">
+      <div class="loader">
+        <div class="scanner"></div>
+        <h2>Z STORE</h2>
+        <p>Khởi tạo hệ thống...</p>
+      </div>
+    </div>
+
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-brand">
+          <i class="fas fa-code"></i>
+          <span>Z STORE</span>
+        </div>
+        <div class="nav-menu">
+          <a href="#home" class="nav-link active">Trang chủ</a>
+          <a href="#apps" class="nav-link">Ứng dụng</a>
+          <a href="#about" class="nav-link">Giới thiệu</a>
+          <div class="auth-buttons">
+            <button class="btn-secondary" id="loginBtn">Đăng nhập</button>
+            <button class="btn-primary" id="registerBtn">Đăng ký</button>
+            <div class="user-menu" id="userMenu" style="display: none">
+              <span id="username"></span>
+              <div class="dropdown">
+                <button class="dropdown-btn">
+                  <i class="fas fa-user"></i>
+                </button>
+                <div class="dropdown-content">
+                  <a href="/upload"><i class="fas fa-upload"></i> Đăng tải</a>
+                  <a href="#" id="myAppsBtn"
+                    ><i class="fas fa-list"></i> Ứng dụng của tôi</a
+                  >
+                  <a href="/admin" id="adminBtn" style="display: none"
+                    ><i class="fas fa-cog"></i> Quản trị</a
+                  >
+                  <a href="#" id="logoutBtn"
+                    ><i class="fas fa-sign-out-alt"></i> Đăng xuất</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <section id="home" class="hero">
+        <div class="hero-content">
+          <div class="glitch-container">
+            <h1 class="glitch" data-text="Z STORE">Z STORE</h1>
+          </div>
+          <p class="hero-subtitle">Nền tảng chia sẻ phần mềm chuyên nghiệp</p>
+          <div class="hero-stats">
+            <div class="stat">
+              <span class="stat-number" id="totalApps">0</span>
+              <span class="stat-label">Ứng dụng</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number" id="totalDownloads">0</span>
+              <span class="stat-label">Lượt tải</span>
+            </div>
+          </div>
+          <button class="cta-button" onclick="scrollToSection('apps')">
+            <span>Khám phá ngay</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+        <div class="hero-bg">
+          <div class="floating-elements">
+            <div class="element" style="--delay: 0s">
+              <i class="fas fa-code"></i>
+            </div>
+            <div class="element" style="--delay: 2s">
+              <i class="fas fa-download"></i>
+            </div>
+            <div class="element" style="--delay: 4s">
+              <i class="fas fa-mobile-alt"></i>
+            </div>
+            <div class="element" style="--delay: 6s">
+              <i class="fas fa-desktop"></i>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="apps" class="apps-section">
+        <div class="container">
+          <h2 class="section-title">Ứng dụng nổi bật</h2>
+          <div class="filter-bar">
+            <select id="categoryFilter" class="filter-select">
+              <option value="">Tất cả danh mục</option>
+              <option value="Games">Trò chơi</option>
+              <option value="Tools">Công cụ</option>
+              <option value="Education">Giáo dục</option>
+              <option value="Entertainment">Giải trí</option>
+              <option value="Productivity">Năng suất</option>
+              <option value="Other">Khác</option>
+            </select>
+            <div class="search-bar">
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Tìm kiếm ứng dụng..."
+              />
+              <i class="fas fa-search"></i>
+            </div>
+          </div>
+          <div class="apps-grid" id="appsGrid">
+            <!-- Apps will be loaded here -->
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="about-section">
+        <div class="container">
+          <h2 class="section-title">Về Z STORE</h2>
+          <div class="about-content">
+            <div class="about-text">
+              <p>
+                Z STORE là nền tảng chia sẻ phần mềm hàng đầu, nơi các nhà phát
+                triển và người dùng có thể kết nối, chia sẻ và khám phá những
+                ứng dụng tuyệt vời.
+              </p>
+              <div class="features">
+                <div class="feature">
+                  <i class="fas fa-shield-alt"></i>
+                  <h3>Bảo mật cao</h3>
+                  <p>Tất cả ứng dụng được kiểm duyệt kỹ lưỡng</p>
+                </div>
+                <div class="feature">
+                  <i class="fas fa-rocket"></i>
+                  <h3>Tốc độ cao</h3>
+                  <p>Tải xuống nhanh chóng và ổn định</p>
+                </div>
+                <div class="feature">
+                  <i class="fas fa-users"></i>
+                  <h3>Cộng đồng</h3>
+                  <p>Kết nối với các nhà phát triển</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+      <div class="modal-content">
+        <span class="close" id="closeLogin">&times;</span>
+        <h2>Đăng nhập</h2>
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="loginUsername">Tên đăng nhập</label>
+            <input type="text" id="loginUsername" required />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Mật khẩu</label>
+            <input type="password" id="loginPassword" required />
+          </div>
+          <button type="submit" class="btn-primary">Đăng nhập</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal" id="registerModal">
+      <div class="modal-content">
+        <span class="close" id="closeRegister">&times;</span>
+        <h2>Đăng ký</h2>
+        <form id="registerForm">
+          <div class="form-group">
+            <label for="regUsername">Tên đăng nhập</label>
+            <input type="text" id="regUsername" required />
+          </div>
+          <div class="form-group">
+            <label for="regEmail">Email</label>
+            <input type="email" id="regEmail" required />
+          </div>
+          <div class="form-group">
+            <label for="regPassword">Mật khẩu</label>
+            <input type="password" id="regPassword" required />
+          </div>
+          <button type="submit" class="btn-primary">Đăng ký</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- App Detail Modal -->
+    <div class="modal" id="appModal">
+      <div class="modal-content app-modal">
+        <span class="close" id="closeApp">&times;</span>
+        <div class="app-detail">
+          <div class="app-header">
+            <h2 id="appTitle"></h2>
+            <span class="app-category" id="appCategory"></span>
+          </div>
+          <div class="app-info">
+            <div class="app-meta">
+              <span
+                ><i class="fas fa-user"></i> <span id="appAuthor"></span
+              ></span>
+              <span
+                ><i class="fas fa-download"></i>
+                <span id="appDownloads"></span> lượt tải</span
+              >
+              <span
+                ><i class="fas fa-tag"></i> v<span id="appVersion"></span
+              ></span>
+            </div>
+            <p id="appDescription"></p>
+            <button class="download-btn" id="downloadBtn">
+              <i class="fas fa-download"></i>
+              Tải xuống
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

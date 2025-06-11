@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KZ Server Dashboard - Elite Control Center</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary-bg: #0a0a0f;
+        --secondary-bg: #1a1a2e;
+        --accent-color: #00d4ff;
+        --secondary-accent: #ff0080;
+        --text-primary: #ffffff;
+        --text-secondary: #a0a0b0;
+        --glass-bg: rgba(255, 255, 255, 0.03);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --shadow-glow: 0 0 50px rgba(0, 212, 255, 0.3);
+        --shadow-pink: 0 0 30px rgba(255, 0, 128, 0.2);
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--primary-bg);
+        min-height: 100vh;
+        color: var(--text-primary);
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      /* Animated Background */
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+            circle at 20% 80%,
+            rgba(0, 212, 255, 0.1) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(255, 0, 128, 0.1) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 40% 30%,
+            rgba(138, 43, 226, 0.05) 0%,
+            transparent 50%
+          );
+        animation: backgroundShift 20s ease-in-out infinite;
+        z-index: -2;
+      }
+
+      @keyframes backgroundShift {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.7;
+        }
+      }
+
+      /* Particle Animation */
+      .particles {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .particle {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: var(--accent-color);
+        border-radius: 50%;
+        opacity: 0.3;
+        animation: float 15s infinite linear;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(100vh) rotate(0deg);
+          opacity: 0;
+        }
+        10% {
+          opacity: 0.3;
+        }
+        90% {
+          opacity: 0.3;
+        }
+        100% {
+          transform: translateY(-100vh) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 4rem;
+        position: relative;
+      }
+
+      .header::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(
+          circle,
+          rgba(0, 212, 255, 0.1),
+          transparent
+        );
+        border-radius: 50%;
+        animation: pulse 4s ease-in-out infinite;
+        z-index: -1;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 0.5;
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.2);
+          opacity: 0.8;
+        }
+      }
+
+      .header h1 {
+        font-family: "Orbitron", monospace;
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 900;
+        margin-bottom: 1rem;
+        background: linear-gradient(
+          45deg,
+          var(--accent-color),
+          var(--secondary-accent),
+          #fff
+        );
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: gradientShift 3s ease-in-out infinite;
+        text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        position: relative;
+      }
+
+      @keyframes gradientShift {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+
+      .header p {
+        font-size: 1.3rem;
+        opacity: 0.8;
+        font-weight: 300;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+      }
+
+      .stat-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+      }
+
+      .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transition: left 0.7s;
+      }
+
+      .stat-card:hover::before {
+        left: 100%;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: var(--shadow-glow);
+        border-color: var(--accent-color);
+      }
+
+      .stat-number {
+        font-family: "Orbitron", monospace;
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--accent-color);
+        margin-bottom: 0.5rem;
+        text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+      }
+
+      .stat-label {
+        font-size: 1rem;
+        opacity: 0.7;
+        font-weight: 500;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      .servers-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2.5rem;
+        margin-bottom: 3rem;
+      }
+
+      .server-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(25px);
+        border: 1px solid var(--glass-border);
+        border-radius: 25px;
+        padding: 2.5rem;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+      }
+
+      .server-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          var(--accent-color),
+          var(--secondary-accent)
+        );
+        transform: scaleX(0);
+        transition: transform 0.5s ease;
+      }
+
+      .server-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .server-card:hover {
+        transform: translateY(-15px) rotateX(5deg);
+        box-shadow: var(--shadow-glow), 0 20px 40px rgba(0, 0, 0, 0.3);
+        border-color: var(--accent-color);
+      }
+
+      .server-card:nth-child(even):hover {
+        box-shadow: var(--shadow-pink), 0 20px 40px rgba(0, 0, 0, 0.3);
+        border-color: var(--secondary-accent);
+      }
+
+      .server-card h3 {
+        font-family: "Orbitron", monospace;
+        font-size: 1.6rem;
+        margin-bottom: 1.5rem;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .server-card h3::before {
+        content: "◉";
+        color: var(--accent-color);
+        animation: blink 2s infinite;
+      }
+
+      @keyframes blink {
+        0%,
+        50% {
+          opacity: 1;
+        }
+        51%,
+        100% {
+          opacity: 0.3;
+        }
+      }
+
+      .server-info {
+        margin-bottom: 2rem;
+        space-y: 1rem;
+      }
+
+      .server-info p {
+        margin-bottom: 1rem;
+        opacity: 0.9;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+      }
+
+      .server-info code {
+        background: rgba(0, 212, 255, 0.1);
+        border: 1px solid rgba(0, 212, 255, 0.3);
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+        font-family: "Orbitron", monospace;
+        color: var(--accent-color);
+        font-weight: 600;
+        margin-left: auto;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem 2rem;
+        background: linear-gradient(
+          45deg,
+          var(--accent-color),
+          var(--secondary-accent)
+        );
+        color: white;
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      .btn:hover::before {
+        left: 100%;
+      }
+
+      .btn:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+      }
+
+      .loading {
+        text-align: center;
+        padding: 4rem;
+      }
+
+      .spinner {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 2rem;
+        position: relative;
+      }
+
+      .spinner::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 3px solid transparent;
+        border-top: 3px solid var(--accent-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      .spinner::after {
+        content: "";
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: calc(100% - 12px);
+        height: calc(100% - 12px);
+        border: 3px solid transparent;
+        border-bottom: 3px solid var(--secondary-accent);
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite reverse;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .error {
+        background: rgba(255, 0, 0, 0.1);
+        border: 1px solid rgba(255, 0, 0, 0.3);
+        padding: 2rem;
+        border-radius: 15px;
+        margin: 2rem 0;
+        text-align: center;
+        backdrop-filter: blur(10px);
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 4rem;
+        padding: 2rem;
+        border-top: 1px solid var(--glass-border);
+        opacity: 0.6;
+        font-size: 0.9rem;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .container {
+          padding: 1rem;
+        }
+
+        .servers-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .stats {
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--primary-bg);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: linear-gradient(
+          var(--accent-color),
+          var(--secondary-accent)
+        );
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(
+          var(--secondary-accent),
+          var(--accent-color)
+        );
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Particles Background -->
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+      <div class="header">
+        <h1>⚡ KZ ELITE CONTROL CENTER ⚡</h1>
+        <p>Advanced Server Management System</p>
+      </div>
+
+      <div class="stats" id="stats">
+        <div class="stat-card">
+          <div class="stat-number" id="totalServers">-</div>
+          <div class="stat-label">Active Servers</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="mainPort">-</div>
+          <div class="stat-label">Main Port</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="uptime">-</div>
+          <div class="stat-label">System Uptime</div>
+        </div>
+      </div>
+
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Đang khởi tạo hệ thống...</p>
+      </div>
+
+      <div id="servers" class="servers-grid" style="display: none"></div>
+
+      <div id="error" class="error" style="display: none">
+        <h3>🚨 CONNECTION ERROR</h3>
+        <p>Không thể kết nối tới server. Hệ thống có thể đang bảo trì.</p>
+        <button class="btn" onclick="loadServers()" style="margin-top: 1.5rem">
+          🔄 Retry Connection
+        </button>
+      </div>
+
+      <div class="footer">
+        <p>&copy; 2025 KZ Elite Systems • Powered by Advanced Technology</p>
+      </div>
+    </div>
+
+    <script>
+      let startTime = Date.now();
+
+      // Create particles
+      function createParticles() {
+        const particlesContainer = document.getElementById("particles");
+        const particleCount = 50;
+
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement("div");
+          particle.className = "particle";
+          particle.style.left = Math.random() * 100 + "%";
+          particle.style.animationDelay = Math.random() * 15 + "s";
+          particle.style.animationDuration = Math.random() * 10 + 10 + "s";
+          particlesContainer.appendChild(particle);
+        }
+      }
+
+      // Update uptime
+      function updateUptime() {
+        const uptime = Math.floor((Date.now() - startTime) / 1000);
+        const hours = Math.floor(uptime / 3600);
+        const minutes = Math.floor((uptime % 3600) / 60);
+        const seconds = uptime % 60;
+
+        document.getElementById("uptime").textContent = `${hours
+          .toString()
+          .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds
+          .toString()
+          .padStart(2, "0")}`;
+      }
+
+      // Load servers
+      async function loadServers() {
+        const loading = document.getElementById("loading");
+        const servers = document.getElementById("servers");
+        const error = document.getElementById("error");
+
+        loading.style.display = "block";
+        servers.style.display = "none";
+        error.style.display = "none";
+
+        try {
+          const response = await fetch("/api/servers");
+          const data = await response.json();
+
+          if (data.success) {
+            displayServers(data.servers);
+            updateStats(data);
+          } else {
+            throw new Error("Không thể tải dữ liệu");
+          }
+        } catch (err) {
+          console.error("Error loading servers:", err);
+          loading.style.display = "none";
+          error.style.display = "block";
+        }
+      }
+
+      // Display servers
+      function displayServers(serverList) {
+        const loading = document.getElementById("loading");
+        const servers = document.getElementById("servers");
+
+        servers.innerHTML = serverList
+          .map(
+            (server) => `
+                <div class="server-card">
+                    <h3>${server.name.toUpperCase()}</h3>
+                    <div class="server-info">
+                        <p><strong>🌐 Port:</strong> <code>${
+                          server.port
+                        }</code></p>
+                        <p><strong>📡 Route:</strong> <code>${
+                          server.url
+                        }</code></p>
+                        <p><strong>📂 Path:</strong> <code>${
+                          server.path
+                        }</code></p>
+                    </div>
+                    <a href="${generateServerUrl(
+                      server.port
+                    )}" class="btn" target="_blank">
+                        🚀 Launch Server
+                    </a>
+                </div>
+            `
+          )
+          .join("");
+
+        loading.style.display = "none";
+        servers.style.display = "grid";
+
+        // Add staggered animation
+        const cards = servers.querySelectorAll(".server-card");
+        cards.forEach((card, index) => {
+          card.style.opacity = "0";
+          card.style.transform = "translateY(50px)";
+          setTimeout(() => {
+            card.style.transition = "all 0.6s cubic-bezier(0.4, 0, 0.2, 1)";
+            card.style.opacity = "1";
+            card.style.transform = "translateY(0)";
+          }, index * 100);
+        });
+      }
+
+      // Generate server URL - thay đổi logic chuyển hướng
+      function generateServerUrl(port) {
+        // Lấy hostname hiện tại và thay đổi port
+        const currentHost = window.location.hostname;
+        const protocol = window.location.protocol;
+
+        // Thay đổi port trong hostname nếu có pattern gs8clp-XXXX
+        if (currentHost.includes("gs8clp-")) {
+          const newHost = currentHost.replace(/gs8clp-\d+/, `gs8clp-${port}`);
+          return `${protocol}//${newHost}`;
+        }
+
+        // Fallback cho localhost hoặc domain khác
+        return `${protocol}//${currentHost}:${port}`;
+      }
+
+      // Update stats
+      function updateStats(data) {
+        document.getElementById("totalServers").textContent =
+          data.servers.length;
+        document.getElementById("mainPort").textContent = data.mainPort;
+      }
+
+      // Initialize
+      document.addEventListener("DOMContentLoaded", () => {
+        createParticles();
+        loadServers();
+        setInterval(updateUptime, 1000);
+      });
+
+      // Add click effects
+      document.addEventListener("click", (e) => {
+        if (e.target.matches(".stat-card, .server-card")) {
+          const ripple = document.createElement("div");
+          ripple.style.position = "absolute";
+          ripple.style.borderRadius = "50%";
+          ripple.style.background = "rgba(0, 212, 255, 0.6)";
+          ripple.style.transform = "scale(0)";
+          ripple.style.animation = "ripple 0.6s linear";
+          ripple.style.left = e.clientX - e.target.offsetLeft + "px";
+          ripple.style.top = e.clientY - e.target.offsetTop + "px";
+          ripple.style.width = ripple.style.height = "20px";
+          ripple.style.marginLeft = ripple.style.marginTop = "-10px";
+
+          e.target.appendChild(ripple);
+          setTimeout(() => ripple.remove(), 600);
+        }
+      });
+
+      // Add ripple animation
+      const style = document.createElement("style");
+      style.textContent = `
+        @keyframes ripple {
+          to {
+            transform: scale(4);
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,40 @@
+{
+  "name": "main-server",
+  "version": "1.0.0",
+  "description": "Main server quản lý nhiều ứng dụng con",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "dev": "nodemon main.js",
+    "reload": "pm2 reload main-server",
+    "stop": "pm2 stop main-server"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "bcrypt": "^6.0.0",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "express": "^4.18.2",
+    "express-session": "^1.18.1",
+    "http-proxy-middleware": "^3.0.5",
+    "jsonwebtoken": "^9.0.2",
+    "mammoth": "^1.9.1",
+    "multer": "^2.0.1",
+    "nodemailer": "^7.0.3",
+    "pdf-parse": "^1.1.1",
+    "shortid": "^2.2.16",
+    "soundcloud-downloader": "^1.0.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "express",
+    "microservices",
+    "multi-app"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
